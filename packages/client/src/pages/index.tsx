@@ -28,8 +28,7 @@ export default function HomePage() {
     <Layout>
       <div>{address}</div>
       <div>data: {count && count.toString()}</div>
-      <button onClick={increment}>Click</button>
-
+      <button className='btn' onClick={increment}>Click</button>
       <button onClick={() => addNotification()}>Notification</button>
     </Layout>
   );
