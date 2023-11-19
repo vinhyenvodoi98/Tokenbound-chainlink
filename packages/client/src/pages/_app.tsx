@@ -19,11 +19,29 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Providers>
-      <Header />
-      <ContractProvider>
-        <Component {...pageProps} />
-      </ContractProvider>
-      <ToastContainer position="bottom-right" newestOnTop />
+      <div
+        className='
+          w-full
+          min-h-screen
+          bg-gradient-to-r
+          from-[#151516]
+          to-[#232425]
+          background-animate
+        '
+      >
+      <div className='
+          w-full
+          min-h-screen
+          bg-[url("/png/nham.png")]
+          text-white
+          '>
+        <Header />
+        <ContractProvider>
+          <Component {...pageProps} />
+        </ContractProvider>
+        <ToastContainer position="bottom-right" newestOnTop />
+      </div>
+      </div>
     </Providers>
   );
 }

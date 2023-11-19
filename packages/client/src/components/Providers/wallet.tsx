@@ -86,7 +86,7 @@ const Wallet = () => {
                       onClick={openChainModal}
                       style={{ display: 'flex', alignItems: 'center' }}
                       type="button"
-                      className='px-4 border border-gray-300 rounded-xl shadow-sm'
+                      className='px-4 border-2 font-bold border-gray-500 rounded-xl shadow-sm'
                     >
                       {chain.hasIcon && (
                         <div
@@ -114,7 +114,7 @@ const Wallet = () => {
                       <button
                         onClick={toggleDropdown}
                         type="button"
-                        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        className="inline-flex items-center px-4 py-2 font-bold border-2 border-gray-500 rounded-xl shadow-sm text-white text-sm"
                         id="dropdown-menu-button"
                         aria-expanded={isOpen ? 'true' : 'false'}
                         aria-haspopup="true"
