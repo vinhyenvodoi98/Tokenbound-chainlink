@@ -12,7 +12,7 @@ const { chains, publicClient } = configureChains(
   [
     ...(process.env.NODE_ENV === "development"
       ? [optimismGoerli, polygonMumbai, goerli, modeTestnet]
-      : []),
+      : [optimismGoerli]),
   ],
   [
     jsonRpcProvider({
