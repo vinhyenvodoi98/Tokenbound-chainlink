@@ -9,5 +9,8 @@ npx hardhat help
 npx hardhat test
 REPORT_GAS=true npx hardhat test
 npx hardhat node
-npx hardhat run scripts/deploy.ts
+# Deploy contract
+pnpm run goerli
+# verify contract
+npx hardhat verify --network goerli 0xB6722192Af1f0DFCe6AcD84F254c663788dC4B62
 ```

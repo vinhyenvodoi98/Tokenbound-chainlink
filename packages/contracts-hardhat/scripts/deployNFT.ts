@@ -3,20 +3,20 @@ import fs from "fs";
 require('dotenv').config()
 
 async function main() {
-  const ERC6551Registry = await ethers.deployContract("ERC6551Registry", [], {}) as any;
+  const myNFT = await ethers.deployContract("myNFT", [], {}) as any;
 
-  await ERC6551Registry.waitForDeployment();
+  await myNFT.waitForDeployment();
 
   console.log(
-    `deployed to ${ERC6551Registry.target}`
+    `deployed to ${myNFT.target}`
   );
 
   const contractAddresses = readDataFromFile();
 
   if (contractAddresses[network.config.chainId as number]) {
-    contractAddresses[network.config.chainId as number].address = ERC6551Registry.target;
+    contractAddresses[network.config.chainId as number].address = myNFT.target;
   } else {
-    contractAddresses[network.config.chainId as number] = { address: ERC6551Registry.target };
+    contractAddresses[network.config.chainId as number] = { address: myNFT.target };
   }
   // Save the updated array to the JSON file
   writeDataToFile(contractAddresses);
@@ -31,7 +31,7 @@ main().catch((error) => {
 
 const readDataFromFile = () => {
   try {
-    const data = fs.readFileSync('contract-address.json', 'utf8');
+    const data = fs.readFileSync('myNFT-address.json', 'utf8');
     return JSON.parse(data);
   } catch (err) {
     return {};
@@ -39,5 +39,5 @@ const readDataFromFile = () => {
 };
 
 const writeDataToFile = (data : any) => {
-  fs.writeFileSync('contract-address.json', JSON.stringify(data, null, 2));
+  fs.writeFileSync('myNFT-address.json', JSON.stringify(data, null, 2));
 };
