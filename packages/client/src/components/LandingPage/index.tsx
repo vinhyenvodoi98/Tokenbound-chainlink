@@ -1,3 +1,5 @@
+'use client';
+import Link from "next/link";
 import Flow from "../Flow";
 
 export default function LandingPage() {
@@ -18,7 +20,9 @@ export default function LandingPage() {
         </h1>
         <div className="flex items-center gap-4 mt-16">
           <p className="text-slate-400">Create your first Tokenbound-Chainlink</p>
-          <button className="btn btn-outline text-blue-500 hover:bg-blue-600 text-lg w-32">Create</button>
+          <Link href='/create'>
+            <button className="btn btn-outline rounded-full text-blue-500 hover:bg-blue-600 text-lg w-32">Create</button>
+          </Link>
         </div>
       </div>
       <div style={{ height: '100%' }}>

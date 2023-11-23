@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
 import ReactFlow, {
-  Controls,
   Background,
   applyNodeChanges,
   applyEdgeChanges,
+  Node,
+  Edge,
 } from 'reactflow';
 import Account from './Account';
 import TextUpdaterNft from './TextUpdaterNft';
@@ -61,8 +62,8 @@ const nodeTypes = {
 };
 
 export default function Flow() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
   const onNodesChange = useCallback(
     (changes : any) => setNodes((nds) => applyNodeChanges(changes, nds)),

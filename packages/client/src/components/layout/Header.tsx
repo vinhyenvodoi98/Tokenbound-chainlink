@@ -1,6 +1,6 @@
-import * as React from 'react';
-
+'use client';
 import Wallet from '@/components/Providers/wallet';
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -8,7 +8,9 @@ export default function Header() {
       <div className='layout flex items-center justify-between'>
         <div className="navbar rounded-box m-5 bg-[#26292B]">
           <div className="flex-1">
-            <a className="btn btn-ghost text-xl">Home</a>
+            <Link href='/'>
+              <button className="btn btn-ghost text-xl">Home</button>
+            </Link>
           </div>
           <div className="flex-none">
             <Wallet/>
