@@ -4,6 +4,10 @@ const nextConfig = {
     dirs: ['src'],
   },
 
+  images: {
+    domains: ['ipfs.io'],
+  },
+
   reactStrictMode: true,
   swcMinify: true,
 

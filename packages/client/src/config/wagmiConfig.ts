@@ -7,18 +7,24 @@ import {
     polygonZkEvmTestnet,
     avalanche,
     polygonZkEvm,
+    mainnet,
   } from 'wagmi/chains';
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 const { chains, publicClient } = configureChains(
   [
     ...(process.env.NODE_ENV === "development"
-      ? [polygonMumbai, goerli, avalancheFuji, polygonZkEvmTestnet]
-      : [polygonMumbai, goerli, avalanche, polygonZkEvmTestnet, polygonZkEvm]),
+      ? [polygonMumbai, goerli, avalancheFuji, polygonZkEvmTestnet, mainnet]
+      : [polygonMumbai, goerli, avalanche, polygonZkEvmTestnet, polygonZkEvm, mainnet]),
   ],
   [
     jsonRpcProvider({
       rpc: (chain) => {
+        if (chain.id === mainnet.id)
+          return {
+            http: mainnet.rpcUrls.public.http[0],
+          };
+
         if (chain.id === goerli.id)
           return {
             http: goerli.rpcUrls.public.http[0],

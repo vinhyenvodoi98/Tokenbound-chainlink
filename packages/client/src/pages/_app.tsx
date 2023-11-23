@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 
 import '@/styles/globals.css';
 import "react-toastify/ReactToastify.min.css";
+import 'reactflow/dist/style.css';
 
 import Header from '@/components/layout/Header';
 
