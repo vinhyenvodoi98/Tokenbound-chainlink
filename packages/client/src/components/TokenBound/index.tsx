@@ -27,8 +27,8 @@ export default function TokenBound() {
     <div className="w-full h-96 grid grid-cols-4 border-2 border-gray-600 rounded-xl">
       <div className="bg-gray-800 rounded-l-lg p-4">
         {
-          tokenBounds.map(tokenBound =>
-            <div className={`p-3 rounded-lg hover:bg-gray-500 cursor-pointer ${tokenBound.account === currentAccount && " bg-gray-500"}`} onClick={() => setCurrentAccount(tokenBound.account)}>
+          tokenBounds.map((tokenBound, index) =>
+            <div key={index} className={`p-3 rounded-lg hover:bg-gray-500 cursor-pointer ${tokenBound.account === currentAccount && " bg-gray-500"}`} onClick={() => setCurrentAccount(tokenBound.account)}>
               <div className="flex justify-between">
                 <p>{shortenAddress(tokenBound.account)}</p>
                 <Copy text={tokenBound.account}/>

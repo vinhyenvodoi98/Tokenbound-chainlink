@@ -46,8 +46,8 @@ export default function Create({isProfile, owner}:CreateInterface) {
         </div>
       }
 
-      {NFTs.map((nft:any) =>
-        <div className='h-72 w-full font-bold border-2 border-gray-500 cursor-pointer rounded-2xl flex justify-center items-center'>
+      {NFTs.map((nft:any, index: number) =>
+        <div key={index} className='h-72 w-full font-bold border-2 border-gray-500 cursor-pointer rounded-2xl flex justify-center items-center'>
           <div className="card h-72 card-compact shadow-xl">
             <figure><img className='object-cover' src={nft.image_url} alt={nft.name} /></figure>
             <div className="card-body">
