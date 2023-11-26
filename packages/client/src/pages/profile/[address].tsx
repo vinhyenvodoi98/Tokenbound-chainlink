@@ -7,6 +7,7 @@ import { useAccount } from 'wagmi';
 import Create from '@/components/Create';
 import Layout from '@/components/layout/Layout';
 import ProfileENS from '@/components/ProfileENS';
+import TokenBound from '@/components/TokenBound';
 
 export default function Profile() {
   const router = useRouter();
@@ -53,9 +54,7 @@ export default function Profile() {
         {currentTab === 0 ? (
           <Create isProfile={isProfile} owner={address as string}/>
         ) : (
-          <div className='grid gap-4 grid-cols-2 mx-4 min-h-main'>
-            <div>Caculate</div>
-          </div>
+          <TokenBound/>
         )}
       </div>
       {/* <div className="flex mx-6">

@@ -13,12 +13,21 @@ import Erc721Abi from '../../../../contracts-hardhat/artifacts/@openzeppelin/con
 import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
 import contractAddress from '../../../../contracts-hardhat/contract-address.json';
 
+export interface AccountInterface {
+  account: string,
+  tokenContract: string,
+  tokenId: string,
+  chain: string,
+  salt: string,
+}
+
 export default function Registry() {
   const account = useAccount();
   const [tokenContract, setTokenContract] = useState<string>('');
   const [tokenId, setTokenId] = useState<string>('');
   const [chain, setChain] = useState<string>('');
   const [salt, setSalt] = useState<string>('');
+  const [tokenBounds, setTokenBounds] = useState<AccountInterface[]>([]);
 
   // Read token
   const { data: token } = useContractReads({
@@ -42,6 +51,12 @@ export default function Registry() {
       },
     ],
   });
+
+  useEffect(() => {
+    if(localStorage.getItem("tokenBounds")){
+      setTokenBounds(JSON.parse(localStorage.getItem("tokenBounds") as string) as AccountInterface[])
+    }
+  }, [])
 
   const { data: registry, refetch } = useContractRead({
     address: contractAddress[5].ERC6551Registry as `0x${string}`,
@@ -97,7 +112,7 @@ export default function Registry() {
     else false;
   }, [token, account]);
 
-  const isFullField = useMemo(() => {
+  const isFullFilled = useMemo(() => {
     if (
       tokenContract.length > 0 &&
       tokenId.length > 0 &&
@@ -119,11 +134,21 @@ export default function Registry() {
   }, [tokenContract, tokenId, chain, salt]);
 
   useEffect(() => {
-    if (isSuccess)
+    if (isSuccess) {
       toast.success(
         `Transaction has been created successfully:
         ${transactionHash?.hash}`
       );
+
+      setTokenBounds((prevTokenBounds) => [...prevTokenBounds, {
+        account: registry as any,
+        tokenContract,
+        tokenId,
+        chain,
+        salt,
+      } as AccountInterface])
+      localStorage.setItem("tokenBounds", JSON.stringify(tokenBounds))
+    }
   }, [isSuccess]);
 
   return (
@@ -162,7 +187,7 @@ export default function Registry() {
           </label>
           <input
             onChange={(e) => setSalt(e.target.value)}
-            type='text'
+            type='number'
             placeholder='Type Any: 1'
             className='input input-bordered w-full rounded-md z-10'
           />
@@ -199,10 +224,10 @@ export default function Registry() {
         </div>
         <button
           onClick={() => createNewAccount()}
-          disabled={!(isOwner && isFullField)}
+          disabled={!(isOwner && isFullFilled)}
           className='btn btn-outline rounded-full text-blue-500 hover:bg-blue-500 text-lg w-40'
         >
-          {isOwner ? (isFullField ? 'Create' : 'Not Fulfilled') : 'Not Owner'}
+          {isOwner ? (isFullFilled ? 'Create' : 'Not Fulfilled') : 'Not Owner'}
         </button>
       </div>
     </div>
