@@ -47,6 +47,11 @@ const { chains, publicClient } = configureChains(
             http: avalancheFuji.rpcUrls.public.http[0],
           };
 
+        if (chain.id === avalanche.id)
+          return {
+            http: avalanche.rpcUrls.public.http[0],
+          };
+
         if (chain.id === polygonZkEvmTestnet.id)
           return {
             http: polygonZkEvmTestnet.rpcUrls.public.http[0],
