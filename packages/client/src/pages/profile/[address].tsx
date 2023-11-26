@@ -1,39 +1,64 @@
 'use client';
 
-import Flow from "@/components/Flow";
-import Layout from "@/components/layout/Layout";
-import ProfileENS from "@/components/ProfileENS";
-import { shortenAddress } from "@/utils/addresses";
 import { useRouter } from 'next/router';
-import { useMemo } from "react";
-import { useAccount } from "wagmi";
+import { useMemo, useState } from 'react';
+import { useAccount } from 'wagmi';
+
+import Create from '@/components/Create';
+import Flow from '@/components/Flow';
+import Layout from '@/components/layout/Layout';
+import ProfileENS from '@/components/ProfileENS';
 
 export default function Profile() {
   const router = useRouter();
   const { address } = router.query;
+  const tabs = ['Create', 'Wallet'];
   const account = useAccount();
-  const isProfile = useMemo(
-    () => {
-      if(!address || !account) {return false}
-      return String(address).toLowerCase() === String(account.address).toLowerCase()
-    },
-    [address, account.address],
-  )
+
+  const [currentTab, setCurrentTab] = useState<number>(0);
+
+  const isProfile = useMemo(() => {
+    if (!address || !account) {
+      return false;
+    }
+    return (
+      String(address).toLowerCase() === String(account.address).toLowerCase()
+    );
+  }, [address, account.address]);
 
   return (
     <Layout>
-      <div className="flex py-8 justify-between">
-        {address &&
-        <div>
-          <ProfileENS address={address as string}/>
-        </div>
-        }
+      <div className='flex py-8 justify-between'>
+        {address && (
+          <div>
+            <ProfileENS address={address as string} />
+          </div>
+        )}
       </div>
-      <div className="grid gap-4 grid-cols-2 min-h-main">
-        <div>
-          Caculate
-        </div>
-        <Flow />
+      <div role='tablist' className='tabs tabs-lifted tabs-lg flex'>
+        {tabs.map((tab, index) => (
+          <h1
+            key={index}
+            role='tab'
+            className={`tab text-gray-500 ${
+              currentTab === index && 'tab-active'
+            }`}
+            onClick={() => setCurrentTab(index)}
+          >
+            {tab}
+          </h1>
+        ))}
+        <div className='border-b w-full'></div>
+      </div>
+      <div className='py-8 w-full'>
+        {currentTab === 0 ? (
+          <Create />
+        ) : (
+          <div className='grid gap-4 grid-cols-2 mx-4 min-h-main'>
+            <div>Caculate</div>
+            <Flow />
+          </div>
+        )}
       </div>
       {/* <div className="flex mx-6">
         {

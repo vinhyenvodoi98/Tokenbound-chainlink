@@ -1,21 +1,28 @@
-import { getDefaultWallets } from "@rainbow-me/rainbowkit";
-import { configureChains, createConfig } from "wagmi";
+import { getDefaultWallets } from '@rainbow-me/rainbowkit';
+import { configureChains, createConfig } from 'wagmi';
 import {
-    polygonMumbai,
-    goerli,
-    avalancheFuji,
-    polygonZkEvmTestnet,
-    avalanche,
-    polygonZkEvm,
-    mainnet,
-  } from 'wagmi/chains';
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+  avalanche,
+  avalancheFuji,
+  goerli,
+  mainnet,
+  polygonMumbai,
+  polygonZkEvm,
+  polygonZkEvmTestnet,
+} from 'wagmi/chains';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 const { chains, publicClient } = configureChains(
   [
-    ...(process.env.NODE_ENV === "development"
+    ...(process.env.NODE_ENV === 'development'
       ? [polygonMumbai, goerli, avalancheFuji, polygonZkEvmTestnet, mainnet]
-      : [polygonMumbai, goerli, avalanche, polygonZkEvmTestnet, polygonZkEvm, mainnet]),
+      : [
+          polygonMumbai,
+          goerli,
+          avalanche,
+          polygonZkEvmTestnet,
+          polygonZkEvm,
+          mainnet,
+        ]),
   ],
   [
     jsonRpcProvider({

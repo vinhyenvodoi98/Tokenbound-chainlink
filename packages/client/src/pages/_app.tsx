@@ -1,16 +1,14 @@
 import { AppProps } from 'next/app';
-
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from 'react-toastify';
 
 import '@/styles/globals.css';
-import "react-toastify/ReactToastify.min.css";
+import 'react-toastify/ReactToastify.min.css';
 import 'reactflow/dist/style.css';
 
 import Header from '@/components/layout/Header';
+import Providers from '@/components/Providers';
 
 import { useIsSsr } from '../utils/ssr';
-import { ContractProvider } from '@/contexts/Contract';
-import Providers from '@/components/Providers';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const isSsr = useIsSsr();
@@ -30,18 +28,18 @@ function MyApp({ Component, pageProps }: AppProps) {
           background-animate
         '
       >
-      <div className='
+        <div
+          className='
           w-full
           min-h-screen
           bg-[url("/png/nham.png")]
           text-white
-          '>
-        <Header />
-        <ContractProvider>
+          '
+        >
+          <Header />
           <Component {...pageProps} />
-        </ContractProvider>
-        <ToastContainer position="bottom-right" newestOnTop />
-      </div>
+          <ToastContainer position='bottom-right' newestOnTop />
+        </div>
       </div>
     </Providers>
   );
