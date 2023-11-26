@@ -5,7 +5,6 @@ import { useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import Create from '@/components/Create';
-import Flow from '@/components/Flow';
 import Layout from '@/components/layout/Layout';
 import ProfileENS from '@/components/ProfileENS';
 
@@ -52,11 +51,10 @@ export default function Profile() {
       </div>
       <div className='py-8 w-full'>
         {currentTab === 0 ? (
-          <Create />
+          <Create isProfile={isProfile} owner={address as string}/>
         ) : (
           <div className='grid gap-4 grid-cols-2 mx-4 min-h-main'>
             <div>Caculate</div>
-            <Flow />
           </div>
         )}
       </div>

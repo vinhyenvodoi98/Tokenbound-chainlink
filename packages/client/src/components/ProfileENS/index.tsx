@@ -1,22 +1,11 @@
 import Image from 'next/image';
-import { useState } from 'react';
 import { useEnsAvatar, useEnsName } from 'wagmi';
 
 import { shortenAddress } from '@/utils/addresses';
+import Copy from '../Copy';
 
-import { CheckIcon, CopyIcon } from '../Icon';
 
 export default function ProfileENS({ address }: { address: string }) {
-  const [isCopied, setIsCopied] = useState(false);
-
-  const handleCopyUsername = (name: string) => {
-    navigator.clipboard.writeText(name);
-    setIsCopied(true);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 2000);
-  };
-
   const { data: name } = useEnsName({
     address: address as `0x${string}`,
     scopeKey: (address as `0x${string}`) || '',
@@ -45,16 +34,11 @@ export default function ProfileENS({ address }: { address: string }) {
           alt='Avatar'
         />
       )}
-      <div className='flex'>
-        <h1 className='text-3xl font-bold mt-4'>
+      <div className='flex justify-center items-center gap-2 mt-4'>
+        <h1 className='text-3xl font-bold'>
           {name || shortenAddress(address as `0x${string}`)}
         </h1>
-        <button
-          className='px-2 mt-4'
-          onClick={() => handleCopyUsername(address as `0x${string}`)}
-        >
-          {isCopied ? <CheckIcon /> : <CopyIcon />}
-        </button>
+        <Copy text={address}/>
       </div>
     </div>
   );
