@@ -14,6 +14,7 @@ import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/E
 import contractAddress from '../../../../contracts-hardhat/contract-address.json';
 
 export interface AccountInterface {
+  owner: string,
   account: string,
   tokenContract: string,
   tokenId: string,
@@ -141,6 +142,7 @@ export default function Registry() {
       );
 
       setTokenBounds((prevTokenBounds) => [...prevTokenBounds, {
+        owner: account.address,
         account: registry as any,
         tokenContract,
         tokenId,
