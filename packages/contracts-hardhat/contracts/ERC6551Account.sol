@@ -11,10 +11,10 @@ import "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "./interfaces/IERC6551Account.sol";
 
-import "./lib/MinimalReceiver.sol";
 import "./lib/ERC6551AccountLib.sol";
+import "./lib/TokenArray.sol";
 
-contract ERC6551Account is IERC165, IERC1271, IERC6551Account {
+contract ERC6551Account is IERC165, IERC1271, IERC6551Account, TokenArray {
     uint256 public nonce;
 
     receive() external payable {}
@@ -77,4 +77,5 @@ contract ERC6551Account is IERC165, IERC1271, IERC6551Account {
 
         return "";
     }
+
 }

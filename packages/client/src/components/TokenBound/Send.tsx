@@ -1,20 +1,28 @@
-import { useEffect, useMemo, useState } from "react"
-import { useContractWrite } from "wagmi";
-import { AccountInterface } from "../Registry";
-import { isAddress, parseEther } from 'viem';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
+import { encodeFunctionData, isAddress, parseEther } from 'viem';
+import { useContractWrite } from 'wagmi';
 
+import { NATIVE_TOKEN } from '@/constant/chains';
+
+import { AccountInterface } from '../Registry';
+import Erc20 from '../../../../contracts-hardhat/artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json';
 import Erc6551Account from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Account.sol/ERC6551Account.json';
-import { toast } from "react-toastify";
 
 interface SendInterface {
-  tokenBound: AccountInterface | null,
-  tokenAddress: string
+  tokenBound: AccountInterface | null;
+  tokenAddress: string;
 }
 
-export default function Send({tokenBound, tokenAddress}: SendInterface) {
-  const [to, setTo] = useState<string>('')
-  const [amount, setAmount] = useState<string>('')
+export default function Send({ tokenBound, tokenAddress }: SendInterface) {
+  const [to, setTo] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
   // const [chain, setChain] = useState<string>('')
+
+  const isNative = useMemo(
+    () => tokenAddress === NATIVE_TOKEN.address,
+    [tokenAddress]
+  );
 
   const {
     data: transactionHash,
@@ -28,12 +36,22 @@ export default function Send({tokenBound, tokenAddress}: SendInterface) {
   });
 
   const handleExecute = () => {
+    const data = isNative
+      ? ''
+      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        encodeFunctionData({
+          abi: Erc20.abi,
+          args: [to, parseEther(amount)],
+          functionName: 'transfer',
+        });
+
+    const _amount = isNative ? parseEther(amount) : 0;
+
+    const _to = isNative ? to : tokenAddress;
+
     triggerExecuteCall({
-      args: [
-        to,
-        parseEther(amount),
-        '',
-      ],
+      args: [_to, _amount, data],
     });
   };
 
@@ -47,11 +65,7 @@ export default function Send({tokenBound, tokenAddress}: SendInterface) {
   }, [isSuccess]);
 
   const isFullFilled = useMemo(() => {
-    if (
-      amount.length > 0 &&
-      to.length > 0
-    )
-      return true;
+    if (amount.length > 0 && to.length > 0) return true;
     else false;
   }, [amount, to]);
 
@@ -61,7 +75,7 @@ export default function Send({tokenBound, tokenAddress}: SendInterface) {
     }
   };
 
-  return(
+  return (
     <div>
       <div className='form-control w-full'>
         <label className='label'>
@@ -92,11 +106,15 @@ export default function Send({tokenBound, tokenAddress}: SendInterface) {
           className='input input-bordered w-full rounded-md z-10'
         /> */}
       </div>
-      <div className="mt-8 flex flex-row-reverse">
-        <button onClick={() => handleExecute()} disabled={!isFullFilled} className='btn btn-outline rounded-full text-blue-500 hover:bg-blue-600 text-lg w-32'>
+      <div className='mt-8 flex flex-row-reverse'>
+        <button
+          onClick={() => handleExecute()}
+          disabled={!isFullFilled}
+          className='btn btn-outline rounded-full text-blue-500 hover:bg-blue-600 text-lg w-32'
+        >
           Send
         </button>
       </div>
     </div>
-  )
+  );
 }

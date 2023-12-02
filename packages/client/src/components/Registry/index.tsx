@@ -14,12 +14,12 @@ import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/E
 import contractAddress from '../../../../contracts-hardhat/contract-address.json';
 
 export interface AccountInterface {
-  owner: string,
-  account: string,
-  tokenContract: string,
-  tokenId: string,
-  chain: string,
-  salt: string,
+  owner: string;
+  account: string;
+  tokenContract: string;
+  tokenId: string;
+  chain: string;
+  salt: string;
 }
 
 export default function Registry() {
@@ -29,6 +29,13 @@ export default function Registry() {
   const [chain, setChain] = useState<string>('');
   const [salt, setSalt] = useState<string>('');
   const [tokenBounds, setTokenBounds] = useState<AccountInterface[]>([]);
+
+  const reset = () => {
+    setTokenContract('');
+    setTokenId('');
+    setChain('');
+    setSalt('');
+  };
 
   // Read token
   const { data: token } = useContractReads({
@@ -54,10 +61,14 @@ export default function Registry() {
   });
 
   useEffect(() => {
-    if(localStorage.getItem("tokenBounds")){
-      setTokenBounds(JSON.parse(localStorage.getItem("tokenBounds") as string) as AccountInterface[])
+    if (localStorage.getItem('tokenBounds')) {
+      setTokenBounds(
+        JSON.parse(
+          localStorage.getItem('tokenBounds') as string
+        ) as AccountInterface[]
+      );
     }
-  }, [])
+  }, []);
 
   const { data: registry, refetch } = useContractRead({
     address: contractAddress[5].ERC6551Registry as `0x${string}`,
@@ -141,17 +152,26 @@ export default function Registry() {
         ${transactionHash?.hash}`
       );
 
-      setTokenBounds((prevTokenBounds) => [...prevTokenBounds, {
-        owner: account.address,
-        account: registry as any,
-        tokenContract,
-        tokenId,
-        chain,
-        salt,
-      } as AccountInterface])
-      localStorage.setItem("tokenBounds", JSON.stringify(tokenBounds))
+      setTokenBounds((prevTokenBounds) => [
+        ...prevTokenBounds,
+        {
+          owner: account.address,
+          account: registry as any,
+          tokenContract,
+          tokenId,
+          chain,
+          salt,
+        } as AccountInterface,
+      ]);
+
+      reset();
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    if (tokenBounds.length > 0)
+      localStorage.setItem('tokenBounds', JSON.stringify(tokenBounds));
+  }, [tokenBounds]);
 
   return (
     <div className='flex flex-col w-full lg:flex-row'>

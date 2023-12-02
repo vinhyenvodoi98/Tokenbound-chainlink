@@ -2,8 +2,8 @@ import Image from 'next/image';
 import { useEnsAvatar, useEnsName } from 'wagmi';
 
 import { shortenAddress } from '@/utils/addresses';
-import Copy from '../Copy';
 
+import Copy from '../Copy';
 
 export default function ProfileENS({ address }: { address: string }) {
   const { data: name } = useEnsName({
@@ -38,7 +38,7 @@ export default function ProfileENS({ address }: { address: string }) {
         <h1 className='text-3xl font-bold'>
           {name || shortenAddress(address as `0x${string}`)}
         </h1>
-        <Copy text={address}/>
+        <Copy text={address} />
       </div>
     </div>
   );

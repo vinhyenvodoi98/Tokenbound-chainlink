@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState } from 'react';
+
 import { CheckIcon, CopyIcon } from '../Icon';
 
-export default function Copy({text}: {text: string}) {
+export default function Copy({ text }: { text: string }) {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyUsername = (name: string) => {
@@ -13,11 +14,8 @@ export default function Copy({text}: {text: string}) {
   };
 
   return (
-    <button
-      onClick={() => handleCopyUsername(text)}
-    >
+    <button onClick={() => handleCopyUsername(text)}>
       {isCopied ? <CheckIcon /> : <CopyIcon />}
     </button>
-  )
-
+  );
 }

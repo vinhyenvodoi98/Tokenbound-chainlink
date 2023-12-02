@@ -52,9 +52,9 @@ export default function Profile() {
       </div>
       <div className='py-8 w-full'>
         {currentTab === 0 ? (
-          <Create isProfile={isProfile} owner={address as string}/>
+          <Create isProfile={isProfile} owner={address as string} />
         ) : (
-          <TokenBound/>
+          <TokenBound />
         )}
       </div>
       {/* <div className="flex mx-6">
