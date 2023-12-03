@@ -18,6 +18,12 @@ export default function TokenBound() {
     null
   );
 
+  const [total, setTotal] = useState<number>(0);
+
+  const handleTotal = (childValue: number) => {
+    setTotal((prevTotal) => prevTotal + childValue);
+  };
+
   const [tokens, setTokens] = useState<string[]>([NATIVE_TOKEN.address]);
 
   useEffect(() => {
@@ -93,8 +99,8 @@ export default function TokenBound() {
       <div className='col-span-3 p-4'>
         <div className='h-20 flex justify-between rounded-lg bg-gradient-to-r from-green-100 to-blue-200 p-3'>
           <div>
-            <h1 className='text-gray-900'>120 BTC</h1>
-            <p className='text-gray-600 font-bold'>$120</p>
+            <h1 className='text-gray-900'>${total} USD</h1>
+            {/* <p className='text-gray-600 font-bold'>$120</p> */}
           </div>
           <div className='flex justify-center items-center gap-4'>
             <SetTokenAddress tokenBound={currentAccount} />
@@ -109,6 +115,7 @@ export default function TokenBound() {
               key={token}
               tokenAddress={token}
               tokenBound={currentAccount}
+              handleTotal={handleTotal}
             />
           ))}
         </div>

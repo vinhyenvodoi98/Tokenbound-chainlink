@@ -165,6 +165,10 @@ export default function Registry() {
       ]);
 
       reset();
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      document.getElementById('create-tokenbound-modal ').close();
     }
   }, [isSuccess]);
 

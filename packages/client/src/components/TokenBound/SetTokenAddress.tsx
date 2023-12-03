@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { isAddress } from 'viem';
-import { useBalance, useContractWrite } from 'wagmi';
+import { useBalance, useContractWrite, useNetwork } from 'wagmi';
 
 import { DEFAULT_TOKEN } from '@/constant/chains';
 
 import { SettingIcon } from '../Icon';
 import { AccountInterface } from '../Registry';
 import Erc6551Account from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Account.sol/ERC6551Account.json';
+import { TOKEN_SUPPORTED } from '@/constant/token';
 
 interface SetTokenAddressInterface {
   tokenBound: AccountInterface | null;
@@ -34,7 +35,7 @@ function VerifyToken({
         <div className='flex gap-4 items-center'>
           <img
             className='skeleton w-16 h-16 rounded-full shrink-0'
-            src={DEFAULT_TOKEN.image}
+            src={TOKEN_SUPPORTED[chainId][token].image ? TOKEN_SUPPORTED[chainId][token].image : DEFAULT_TOKEN.image}
             alt='default token image'
           />
 
@@ -52,6 +53,7 @@ export default function SetTokenAddress({
   tokenBound,
 }: SetTokenAddressInterface) {
   const [tokenAddress, setTokenAddress] = useState<string>('');
+  const { chain } = useNetwork()
 
   const handleInput = (input: string) => {
     if (isAddress(input)) {
@@ -77,9 +79,11 @@ export default function SetTokenAddress({
   });
 
   const handleExecute = () => {
-    triggerAddToken({
-      args: [tokenAddress],
-    });
+    if(chain){
+      triggerAddToken({
+        args: [tokenAddress, TOKEN_SUPPORTED[chain?.id][tokenAddress].dataFeed],
+      });
+    }
   };
 
   useEffect(() => {
@@ -91,6 +95,9 @@ export default function SetTokenAddress({
     }
     // reset
     setTokenAddress('');
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    document.getElementById('add-token-modal')?.close();
   }, [isSuccess]);
 
   return (

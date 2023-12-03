@@ -78,4 +78,26 @@ contract ERC6551Account is IERC165, IERC1271, IERC6551Account, TokenArray {
         return "";
     }
 
+    // Add an address to the array
+    function addToken(address _token, address _dataFeed) public {
+        require(msg.sender == owner(), "Not token owner");
+        tokenArray.push(_token);
+        dataFeedAddress[_token] = _dataFeed;
+    }
+
+    // Remove an address from the array
+    function removeAddress(address _token) public {
+        require(msg.sender == owner(), "Not token owner");
+        dataFeedAddress[_token] = address(0);
+        for (uint i = 0; i < tokenArray.length; i++) {
+            if (tokenArray[i] == _token) {
+                // Move the last element to the position to be removed
+                tokenArray[i] = tokenArray[tokenArray.length - 1];
+                // Remove the last element
+                tokenArray.pop();
+                // Exit the loop after removing the element
+                break;
+            }
+        }
+    }
 }
