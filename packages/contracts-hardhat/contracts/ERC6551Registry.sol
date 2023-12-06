@@ -3,9 +3,19 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "./interfaces/IERC6551Registry.sol";
+import {CCIPConfig} from "./crosschain/CCIPConfig.sol";
 
-contract ERC6551Registry is IERC6551Registry {
+import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
+
+contract ERC6551Registry is IERC6551Registry, CCIPReceiver, CCIPConfig {
     error InitializationFailed();
+
+    event MessageSent(bytes32 messageId);
+    event CreateAccountCallSuccessfull();
+
+    constructor(address router) CCIPReceiver(router) {}
 
     function createAccount(
         address implementation,
@@ -26,20 +36,45 @@ contract ERC6551Registry is IERC6551Registry {
 
         _account = Create2.deploy(0, bytes32(salt), code);
 
-        if (initData.length != 0) {
-            (bool success, ) = _account.call(initData);
-            if (!success) revert InitializationFailed();
+        if ( block.chainid != chainId ) {
+            bytes32 messageId;
+
+            bytes memory _initData = abi.encodeWithSignature("setSourceAddress(address)",_account);
+
+            Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+                receiver: abi.encode(ERC6551RegistryAddress[chainId]),
+                data: abi.encodeWithSignature("createAccount(address,uint256,address,uint256,uint256,bytes)", ERC6551AccountAddress[chainId], chainId, tokenContract, tokenId, salt, _initData),
+                tokenAmounts: new Client.EVMTokenAmount[](0),
+                extraArgs: "",
+                feeToken: address(0)
+            });
+
+            uint256 fee = IRouterClient(CCIPRouteAddress[block.chainid]).getFee(
+                uint64(chainId),
+                message
+            );
+
+            messageId = IRouterClient(CCIPRouteAddress[block.chainid]).ccipSend{value: fee}(
+                uint64(chainId),
+                message
+            );
+
+            emit MessageSent(messageId);
+        } else {
+            if (initData.length != 0) {
+                (bool success, ) = _account.call(initData);
+                if (!success) revert InitializationFailed();
+            }
+
+            emit AccountCreated(
+                _account,
+                implementation,
+                chainId,
+                tokenContract,
+                tokenId,
+                salt
+            );
         }
-
-        emit AccountCreated(
-            _account,
-            implementation,
-            chainId,
-            tokenContract,
-            tokenId,
-            salt
-        );
-
         return _account;
     }
 
@@ -71,5 +106,13 @@ contract ERC6551Registry is IERC6551Registry {
                 hex"5af43d82803e903d91602b57fd5bf3",
                 abi.encode(salt_, chainId_, tokenContract_, tokenId_)
             );
+    }
+
+    function _ccipReceive(
+        Client.Any2EVMMessage memory message
+    ) internal override {
+        (bool success, ) = address(this).call(message.data);
+        require(success);
+        emit CreateAccountCallSuccessfull();
     }
 }

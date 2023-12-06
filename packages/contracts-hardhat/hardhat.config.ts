@@ -13,6 +13,11 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY as string],
       chainId: 5,
     },
+    sepolia: {
+      url: "https://eth-sepolia.public.blastapi.io",
+      accounts: [PRIVATE_KEY as string],
+      chainId: 11155111,
+    },
     mumbai: {
       url: "https://polygon-testnet.public.blastapi.io",
       accounts: [PRIVATE_KEY as string],
@@ -21,7 +26,8 @@ const config: HardhatUserConfig = {
     fuji: {
       url: "https://rpc.ankr.com/avalanche_fuji",
       accounts: [PRIVATE_KEY as string],
-      chainId: 43113
+      chainId: 43113,
+      allowUnlimitedContractSize: true,
     }
   },
   etherscan: {

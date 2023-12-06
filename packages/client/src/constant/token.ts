@@ -1,17 +1,17 @@
 // https://docs.chain.link/resources/link-token-contracts
 export const TOKEN_SUPPORTED: Record<any, any> = {
-  // Goerli
-  "5": {
+  // Sepolia
+  "11155111": {
     "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE": {
       name: "ETH",
       image: 'https://s2.coinmarketcap.com/static/img/coins/128x128/1027.png',
-      dataFeed: "0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e",
+      dataFeed: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
       dataFeedName: "ETH / USD"
     },
-    "0x326C977E6efc84E512bB9C30f76E30c160eD06FB": {
+    "0x779877A7B0D9E8603169DdbD7836e478b4624789": {
       name: "LINK",
       image: 'https://s2.coinmarketcap.com/static/img/coins/128x128/1975.png',
-      dataFeed: "0x48731cF7e84dc94C5f84577882c14Be11a5B7456",
+      dataFeed: "0xc59E3633BAAC79493d908e63626716e204A45EdF",
       dataFeedName: "LINK / USD"
     }
   },

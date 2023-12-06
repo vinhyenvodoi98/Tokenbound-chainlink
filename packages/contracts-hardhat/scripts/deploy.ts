@@ -1,9 +1,10 @@
 import { ethers, network } from "hardhat";
 import fs from "fs";
+import { routerConfig } from "./constants";
 require('dotenv').config()
 
 async function main() {
-  const ERC6551Registry = await ethers.deployContract("ERC6551Registry", [], {}) as any;
+  const ERC6551Registry = await ethers.deployContract("ERC6551Registry", [routerConfig[network.name as string].address], {}) as any;
   await ERC6551Registry.waitForDeployment();
 
   console.log(

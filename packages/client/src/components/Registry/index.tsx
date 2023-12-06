@@ -6,12 +6,13 @@ import {
   useContractRead,
   useContractReads,
   useContractWrite,
+  useNetwork,
 } from 'wagmi';
 
 import NFTImage from '../NFTImage';
 import Erc721Abi from '../../../../contracts-hardhat/artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json';
 import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
-import contractAddress from '../../../../contracts-hardhat/contract-address.json';
+import { getContractAddress } from '@/utils/getContract';
 
 export interface AccountInterface {
   owner: string;
@@ -24,6 +25,7 @@ export interface AccountInterface {
 
 export default function Registry() {
   const account = useAccount();
+  const { chain: currentChain } = useNetwork()
   const [tokenContract, setTokenContract] = useState<string>('');
   const [tokenId, setTokenId] = useState<string>('');
   const [chain, setChain] = useState<string>('');
@@ -71,11 +73,11 @@ export default function Registry() {
   }, []);
 
   const { data: registry, refetch } = useContractRead({
-    address: contractAddress[5].ERC6551Registry as `0x${string}`,
+    address: getContractAddress(currentChain?.id).ERC6551Registry as `0x${string}`,
     abi: Erc6551Registry.abi as any,
     functionName: 'account',
     args: [
-      contractAddress[5].ERC6551Account,
+      getContractAddress(currentChain?.id).ERC6551Account,
       chain,
       tokenContract,
       tokenId,
@@ -89,22 +91,23 @@ export default function Registry() {
     isSuccess: isSuccess,
     write: triggerCreateAccount,
   } = useContractWrite({
-    address: contractAddress[5].ERC6551Registry as `0x${string}`,
+    address: getContractAddress(currentChain?.id).ERC6551Registry as `0x${string}`,
     abi: Erc6551Registry.abi as any,
     functionName: 'createAccount',
   });
 
   const createNewAccount = () => {
-    triggerCreateAccount({
-      args: [
-        contractAddress[5].ERC6551Account,
-        chain,
-        tokenContract,
-        tokenId,
-        salt,
-        '',
-      ],
-    });
+    if(currentChain)
+      triggerCreateAccount({
+        args: [
+          getContractAddress(currentChain?.id).ERC6551Account,
+          chain,
+          tokenContract,
+          tokenId,
+          salt,
+          '',
+        ],
+      });
   };
 
   const handleInput = (input: string) => {
@@ -133,7 +136,7 @@ export default function Registry() {
     )
       return true;
     else false;
-  }, [contractAddress, tokenId, chain, salt]);
+  }, [tokenContract, tokenId, chain, salt]);
 
   useEffect(() => {
     if (

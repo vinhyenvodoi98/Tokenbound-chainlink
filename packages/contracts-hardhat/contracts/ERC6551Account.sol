@@ -17,7 +17,17 @@ import "./lib/TokenArray.sol";
 contract ERC6551Account is IERC165, IERC1271, IERC6551Account, TokenArray {
     uint256 public nonce;
 
+    // crosschain
+    address public sourceAddress;
+    address public routerAddress;
+
     receive() external payable {}
+
+    function setSourceAddress(address _sourceAddress ) external {
+        require(nonce == 0, "need to set in first transaction");
+        sourceAddress = _sourceAddress;
+        ++nonce;
+    }
 
     function executeCall(
         address to,
