@@ -2,6 +2,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { useEnsAvatar, useEnsName } from 'wagmi';
 
 const Wallet = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,6 +51,16 @@ const Wallet = () => {
             account &&
             chain &&
             (!authenticationStatus || authenticationStatus === 'authenticated');
+
+          const { data: name } = useEnsName({
+            address: account?.address as `0x${string}`,
+            scopeKey: (account?.address as `0x${string}`) || '',
+          });
+
+          const { data: ensAvatar} = useEnsAvatar({
+            name,
+            scopeKey: account?.address as `0x${string}`,
+          });
 
           return (
             <div
@@ -127,11 +138,11 @@ const Wallet = () => {
                         aria-haspopup='true'
                       >
                         <div className='mr-4'>
-                          {account.ensName || account.displayName}
+                          {name || account.displayName}
                         </div>
-                        {account.ensAvatar ? (
+                        {ensAvatar ? (
                           <Image
-                            src={account.ensAvatar}
+                            src={ensAvatar}
                             style={{ borderRadius: '50%' }}
                             width={30}
                             height={30}

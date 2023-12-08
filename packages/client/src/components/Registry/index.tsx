@@ -13,6 +13,8 @@ import NFTImage from '../NFTImage';
 import Erc721Abi from '../../../../contracts-hardhat/artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json';
 import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
 import { getContractAddress } from '@/utils/getContract';
+import { CHAIN_SUPPORTED } from '@/constant/chains';
+import CrossChainFee from '../CrossChainFee';
 
 export interface AccountInterface {
   owner: string;
@@ -31,6 +33,7 @@ export default function Registry() {
   const [chain, setChain] = useState<string>('');
   const [salt, setSalt] = useState<string>('');
   const [tokenBounds, setTokenBounds] = useState<AccountInterface[]>([]);
+  const [fee, setFee] = useState<any>(0)
 
   const reset = () => {
     setTokenContract('');
@@ -107,6 +110,7 @@ export default function Registry() {
           salt,
           '',
         ],
+        value: fee
       });
   };
 
@@ -180,9 +184,11 @@ export default function Registry() {
       localStorage.setItem('tokenBounds', JSON.stringify(tokenBounds));
   }, [tokenBounds]);
 
+  const selectTitle = useMemo(() => chain.length > 0 ? CHAIN_SUPPORTED[chain].name : "Select chain", [chain])
+
   return (
     <div className='flex flex-col w-full lg:flex-row'>
-      <div className='grid flex-grow min-h-64 rounded-box place-items-center'>
+      <div className='grid flex-grow h-[450px] rounded-box place-items-center'>
         <div className='form-control w-full'>
           <label className='label'>
             <span className='label-text'>Token Address</span>
@@ -205,19 +211,26 @@ export default function Registry() {
           <label className='label'>
             <span className='label-text'>Chain</span>
           </label>
-          <input
-            onChange={(e) => setChain(e.target.value.toString())}
-            type='number'
-            placeholder='Type Chain: 1'
-            className='input input-bordered w-full rounded-md z-10'
-          />
+          <div className="dropdown w-full z-50">
+            <div tabIndex={0} className="btn text-left w-full bg-gray-100 hover:bg-gray-200 justify-start">{selectTitle}</div>
+            <ul tabIndex={0} className="dropdown-content z-10 p-2 shadow bg-base-100 rounded-box w-full">
+              {
+                Object.keys(CHAIN_SUPPORTED).map(key => (
+                  <li key={key} onClick={()=>setChain(key)} className="flex flex-row items-center gap-2 w-full hover:bg-gray-200">
+                    <img src={CHAIN_SUPPORTED[key].image} className="p-4 w-16 h-16 rounded" alt={CHAIN_SUPPORTED[key].name}/>
+                    <p className='font-bold'>{CHAIN_SUPPORTED[key].name}</p>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
           <label className='label'>
             <span className='label-text'>Salt</span>
           </label>
           <input
             onChange={(e) => setSalt(e.target.value)}
             type='number'
-            placeholder='Type Any: 1'
+            placeholder='Type Any Number: 1'
             className='input input-bordered w-full rounded-md z-10'
           />
         </div>
@@ -251,6 +264,16 @@ export default function Registry() {
             <div className='skeleton h-5 w-[384px]'></div>
           )}
         </div>
+        {chain === "43113" &&
+        <div className='flex gap-2'>
+          <p>Cross-chain fee:</p>
+          {isFullFilled ?
+            <CrossChainFee setFee={setFee} tokenContract={tokenContract} desChain={chain} tokenId={tokenId} salt={salt} />
+            :
+            <div className='skeleton h-5 w-[100px]'></div>
+          }
+        </div>
+        }
         <button
           onClick={() => createNewAccount()}
           disabled={!(isOwner && isFullFilled)}

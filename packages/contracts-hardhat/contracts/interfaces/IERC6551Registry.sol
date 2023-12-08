@@ -19,7 +19,7 @@ interface IERC6551Registry {
         uint256 tokenId,
         uint256 seed,
         bytes calldata initData
-    ) external returns (address);
+    ) external payable returns (address);
 
     function account(
         address implementation,
@@ -28,4 +28,12 @@ interface IERC6551Registry {
         uint256 tokenId,
         uint256 salt
     ) external view returns (address);
+
+    function caculateFee(
+        uint256 chainId,
+        address tokenContract,
+        uint256 tokenId,
+        uint256 seed,
+        bytes calldata initData
+    ) external view returns(uint256);
 }

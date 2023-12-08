@@ -7,14 +7,14 @@ import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-sol
 contract CCIPConfig is Withdraw {
     mapping(uint256 => address) public ERC6551RegistryAddress;
     mapping(uint256 => address) public ERC6551AccountAddress;
-    mapping(uint256 => address) public CCIPRouteAddress;
 
-    function addCCIPAddress(uint256 _chain, address _ERC6551Registry, address _ERC6551Account) public onlyOwner {
+    address public CCIPRouteAddress;
+    mapping(uint256 => uint64) public destinationChainSelector;
+
+    function addCCIPAddress(uint256 _chain, address _ERC6551Registry, address _ERC6551Account, uint64 _destinationChainSelector) public onlyOwner {
         ERC6551RegistryAddress[_chain] = _ERC6551Registry;
         ERC6551AccountAddress[_chain] = _ERC6551Account;
-    }
 
-    function addCCIPRouteAddress(uint256 _chain, address _route) public onlyOwner {
-        CCIPRouteAddress[_chain]=_route;
+        destinationChainSelector[_chain]=_destinationChainSelector;
     }
 }

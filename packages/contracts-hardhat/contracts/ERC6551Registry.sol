@@ -15,7 +15,9 @@ contract ERC6551Registry is IERC6551Registry, CCIPReceiver, CCIPConfig {
     event MessageSent(bytes32 messageId);
     event CreateAccountCallSuccessfull();
 
-    constructor(address router) CCIPReceiver(router) {}
+    constructor(address router) CCIPReceiver(router) {
+        CCIPRouteAddress = router;
+    }
 
     function createAccount(
         address implementation,
@@ -24,7 +26,7 @@ contract ERC6551Registry is IERC6551Registry, CCIPReceiver, CCIPConfig {
         uint256 tokenId,
         uint256 salt,
         bytes calldata initData
-    ) external returns (address) {
+    ) external payable returns (address) {
         bytes memory code = _creationCode(implementation, chainId, tokenContract, tokenId, salt);
 
         address _account = Create2.computeAddress(
@@ -49,13 +51,15 @@ contract ERC6551Registry is IERC6551Registry, CCIPReceiver, CCIPConfig {
                 feeToken: address(0)
             });
 
-            uint256 fee = IRouterClient(CCIPRouteAddress[block.chainid]).getFee(
-                uint64(chainId),
-                message
-            );
+            uint64 _destinationChainSelector = destinationChainSelector[chainId];
 
-            messageId = IRouterClient(CCIPRouteAddress[block.chainid]).ccipSend{value: fee}(
-                uint64(chainId),
+            // uint256 fee = IRouterClient(CCIPRouteAddress).getFee(
+            //     _destinationChainSelector,
+            //     message
+            // );
+
+            messageId = IRouterClient(CCIPRouteAddress).ccipSend{value: msg.value}(
+                _destinationChainSelector,
                 message
             );
 
@@ -90,6 +94,31 @@ contract ERC6551Registry is IERC6551Registry, CCIPReceiver, CCIPConfig {
         );
 
         return Create2.computeAddress(bytes32(salt), bytecodeHash);
+    }
+
+    function caculateFee(
+        uint256 chainId,
+        address tokenContract,
+        uint256 tokenId,
+        uint256 salt,
+        bytes calldata initData
+    ) external view returns(uint256) {
+        uint64 _destinationChainSelector = destinationChainSelector[chainId];
+
+        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+            receiver: abi.encode(ERC6551RegistryAddress[chainId]),
+            data: abi.encodeWithSignature("createAccount(address,uint256,address,uint256,uint256,bytes)", ERC6551AccountAddress[chainId], chainId, tokenContract, tokenId, salt, initData),
+            tokenAmounts: new Client.EVMTokenAmount[](0),
+            extraArgs: "",
+            feeToken: address(0)
+        });
+
+        uint256 fee = IRouterClient(CCIPRouteAddress).getFee(
+            _destinationChainSelector,
+            message
+        );
+
+        return fee;
     }
 
     function _creationCode(

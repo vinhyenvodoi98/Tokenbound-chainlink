@@ -6,9 +6,9 @@
   "scripts": {
     "compile": "hardhat compile",
     "sepolia": "hardhat run scripts/deploy.ts --network sepolia",
-    "mumbai": "hardhat run scripts/deploy.ts --network mumbai",
     "fuji": "hardhat run scripts/deploy.ts --network fuji",
-    "myNFT-sepolia": "hardhat run scripts/deployNFT.ts --network sepolia"
+    "myNFT-sepolia": "hardhat run scripts/deployNFT.ts --network sepolia",
+    "myNFT-scroll": "hardhat run scripts/deployNFT.ts --network scroll"
   },
   "keywords": [],
   "author": "",
