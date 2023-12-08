@@ -1,12 +1,22 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+SPDX-License-Identifier: MIT
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-contract myNFT is ERC721 {
-    constructor() ERC721("myNFT", "NFT") {}
+contract SPER is ERC721 {
+    uint256 private _nextTokenId;
 
-    function safeMint(address to, uint256 tokenId) public {
-        _safeMint(to, tokenId);
+    constructor()
+        ERC721("Scroll Pioneers", "SPER")
+    {}
+
+    function _baseURI() internal pure override returns (string memory) {
+        return "https://token.artblocks.io/0x8cDBd7010Bd197848e95C1FD7F6E870AaC9b0d3C/";
+    }
+
+    function safeMint(address to) public {
+        _nextTokenId ++;
+        _safeMint(to, _nextTokenId);
     }
 }

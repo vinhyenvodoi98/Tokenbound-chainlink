@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useEnsAvatar, useEnsName } from 'wagmi';
 
+import { ENS_PNG } from '@/constant/chains';
 import { shortenAddress } from '@/utils/addresses';
 import apiOpenseaCall from '@/utils/opensea';
 
@@ -38,6 +40,16 @@ export default function Create({ isProfile, owner }: CreateInterface) {
     document.getElementById('create-tokenbound-modal ').showModal();
   };
 
+  const { data: name } = useEnsName({
+    address: owner as `0x${string}`,
+    scopeKey: (owner as `0x${string}`) || '',
+  });
+
+  const { data: ensAvatar } = useEnsAvatar({
+    name,
+    scopeKey: owner as `0x${string}`,
+  });
+
   return (
     <div className='w-full grid grid-cols-6 gap-4 place-content-center'>
       {isProfile && (
@@ -46,6 +58,24 @@ export default function Create({ isProfile, owner }: CreateInterface) {
           className='h-72 w-full font-bold border-2 border-gray-500 cursor-pointer bg-gray-600 rounded-lg flex justify-center items-center'
         >
           Custom create
+        </div>
+      )}
+      {name && ensAvatar && (
+        <div className='h-72 w-full font-bold border-2 border-gray-500 cursor-pointer rounded-2xl flex justify-center items-center'>
+          <div className='card h-72 card-compact shadow-xl'>
+            <figure className='relative'>
+              <img className='object-cover' src={ensAvatar} alt={name} />
+              <img
+                className='top-3 left-3 w-9 h-9 absolute'
+                src={ENS_PNG.image}
+                alt='ens'
+              />
+            </figure>
+            <div className='card-body'>
+              <h2 className='card-title'>{name}</h2>
+              <p>ENS</p>
+            </div>
+          </div>
         </div>
       )}
 

@@ -3,7 +3,7 @@ import fs from "fs";
 require('dotenv').config()
 
 async function main() {
-  const myNFT = await ethers.deployContract("myNFT", [], {}) as any;
+  const myNFT = await ethers.deployContract("SPER", [], {}) as any;
 
   await myNFT.waitForDeployment();
 

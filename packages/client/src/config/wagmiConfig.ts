@@ -3,26 +3,17 @@ import { configureChains, createConfig } from 'wagmi';
 import {
   avalanche,
   avalancheFuji,
-  goerli,
   mainnet,
   polygonMumbai,
-  polygonZkEvm,
-  polygonZkEvmTestnet,
+  sepolia,
 } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 const { chains, publicClient } = configureChains(
   [
     ...(process.env.NODE_ENV === 'development'
-      ? [polygonMumbai, goerli, avalancheFuji, polygonZkEvmTestnet, mainnet]
-      : [
-          polygonMumbai,
-          goerli,
-          avalanche,
-          polygonZkEvmTestnet,
-          polygonZkEvm,
-          mainnet,
-        ]),
+      ? [polygonMumbai, sepolia, avalancheFuji, mainnet]
+      : [polygonMumbai, sepolia, avalanche, mainnet]),
   ],
   [
     jsonRpcProvider({
@@ -32,9 +23,9 @@ const { chains, publicClient } = configureChains(
             http: mainnet.rpcUrls.public.http[0],
           };
 
-        if (chain.id === goerli.id)
+        if (chain.id === sepolia.id)
           return {
-            http: goerli.rpcUrls.public.http[0],
+            http: sepolia.rpcUrls.public.http[0],
           };
 
         if (chain.id === polygonMumbai.id)
@@ -51,17 +42,6 @@ const { chains, publicClient } = configureChains(
           return {
             http: avalanche.rpcUrls.public.http[0],
           };
-
-        if (chain.id === polygonZkEvmTestnet.id)
-          return {
-            http: polygonZkEvmTestnet.rpcUrls.public.http[0],
-          };
-
-        if (chain.id === polygonZkEvm.id)
-          return {
-            http: polygonZkEvm.rpcUrls.public.http[0],
-          };
-
         return null;
       },
     }),

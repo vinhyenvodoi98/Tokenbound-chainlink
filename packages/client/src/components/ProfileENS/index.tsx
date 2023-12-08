@@ -9,13 +9,11 @@ export default function ProfileENS({ address }: { address: string }) {
   const { data: name } = useEnsName({
     address: address as `0x${string}`,
     scopeKey: (address as `0x${string}`) || '',
-    chainId: 1,
   });
 
   const ensAvatar = useEnsAvatar({
     name,
     scopeKey: address as `0x${string}`,
-    chainId: 1,
   });
   return (
     <div className='flex flex-col items-start mt-4 ml-6'>
