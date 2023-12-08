@@ -2,11 +2,12 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { useEnsAvatar, useEnsName } from 'wagmi';
+import { useAccount, useEnsAvatar, useEnsName } from 'wagmi';
 
 const Wallet = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
+  const { address } = useAccount();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -25,6 +26,16 @@ const Wallet = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  const { data: name } = useEnsName({
+    address: address as `0x${string}`,
+    scopeKey: (address as `0x${string}`) || '',
+  });
+
+  const { data: ensAvatar } = useEnsAvatar({
+    name,
+    scopeKey: address as `0x${string}`,
+  });
 
   return (
     <div
@@ -51,16 +62,6 @@ const Wallet = () => {
             account &&
             chain &&
             (!authenticationStatus || authenticationStatus === 'authenticated');
-
-          const { data: name } = useEnsName({
-            address: account?.address as `0x${string}`,
-            scopeKey: (account?.address as `0x${string}`) || '',
-          });
-
-          const { data: ensAvatar} = useEnsAvatar({
-            name,
-            scopeKey: account?.address as `0x${string}`,
-          });
 
           return (
             <div

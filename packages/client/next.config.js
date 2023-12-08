@@ -5,7 +5,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['ipfs.io','euc.li'],
+    domains: ['ipfs.io', 'euc.li'],
   },
 
   reactStrictMode: true,

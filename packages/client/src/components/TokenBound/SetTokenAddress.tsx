@@ -4,11 +4,11 @@ import { isAddress } from 'viem';
 import { useBalance, useContractWrite, useNetwork } from 'wagmi';
 
 import { DEFAULT_TOKEN } from '@/constant/chains';
+import { TOKEN_SUPPORTED } from '@/constant/token';
 
 import { SettingIcon } from '../Icon';
 import { AccountInterface } from '../Registry';
 import Erc6551Account from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Account.sol/ERC6551Account.json';
-import { TOKEN_SUPPORTED } from '@/constant/token';
 
 interface SetTokenAddressInterface {
   tokenBound: AccountInterface | null;
@@ -35,7 +35,11 @@ function VerifyToken({
         <div className='flex gap-4 items-center'>
           <img
             className='skeleton w-16 h-16 rounded-full shrink-0'
-            src={TOKEN_SUPPORTED[chainId][token].image ? TOKEN_SUPPORTED[chainId][token].image : DEFAULT_TOKEN.image}
+            src={
+              TOKEN_SUPPORTED[chainId][token].image
+                ? TOKEN_SUPPORTED[chainId][token].image
+                : DEFAULT_TOKEN.image
+            }
             alt='default token image'
           />
 
@@ -53,7 +57,7 @@ export default function SetTokenAddress({
   tokenBound,
 }: SetTokenAddressInterface) {
   const [tokenAddress, setTokenAddress] = useState<string>('');
-  const { chain } = useNetwork()
+  const { chain } = useNetwork();
 
   const handleInput = (input: string) => {
     if (isAddress(input)) {
@@ -79,7 +83,7 @@ export default function SetTokenAddress({
   });
 
   const handleExecute = () => {
-    if(chain){
+    if (chain) {
       triggerAddToken({
         args: [tokenAddress, TOKEN_SUPPORTED[chain?.id][tokenAddress].dataFeed],
       });

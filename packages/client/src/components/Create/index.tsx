@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useEnsAvatar, useEnsName } from 'wagmi';
 
+import { ENS_PNG } from '@/constant/chains';
 import { shortenAddress } from '@/utils/addresses';
 import apiOpenseaCall from '@/utils/opensea';
 
 import Copy from '../Copy';
 import Registry from '../Registry';
-import { useEnsAvatar, useEnsName } from 'wagmi';
-import { ENS_PNG } from '@/constant/chains';
 
 interface CreateInterface {
   isProfile: boolean;
@@ -45,7 +45,7 @@ export default function Create({ isProfile, owner }: CreateInterface) {
     scopeKey: (owner as `0x${string}`) || '',
   });
 
-  const {data: ensAvatar} = useEnsAvatar({
+  const { data: ensAvatar } = useEnsAvatar({
     name,
     scopeKey: owner as `0x${string}`,
   });
@@ -60,22 +60,15 @@ export default function Create({ isProfile, owner }: CreateInterface) {
           Custom create
         </div>
       )}
-      {
-        ( name && ensAvatar ) &&
-        <div
-          className='h-72 w-full font-bold border-2 border-gray-500 cursor-pointer rounded-2xl flex justify-center items-center'
-        >
+      {name && ensAvatar && (
+        <div className='h-72 w-full font-bold border-2 border-gray-500 cursor-pointer rounded-2xl flex justify-center items-center'>
           <div className='card h-72 card-compact shadow-xl'>
             <figure className='relative'>
-              <img
-                className='object-cover'
-                src={ensAvatar}
-                alt={name}
-              />
+              <img className='object-cover' src={ensAvatar} alt={name} />
               <img
                 className='top-3 left-3 w-9 h-9 absolute'
                 src={ENS_PNG.image}
-                alt="ens"
+                alt='ens'
               />
             </figure>
             <div className='card-body'>
@@ -84,7 +77,7 @@ export default function Create({ isProfile, owner }: CreateInterface) {
             </div>
           </div>
         </div>
-      }
+      )}
 
       {NFTs.map((nft: any, index: number) => (
         <div

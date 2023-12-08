@@ -1,20 +1,28 @@
-import { getContractAddress } from "@/utils/getContract";
-import { encodeFunctionData, formatEther } from "viem";
-import { useContractRead, useNetwork } from "wagmi"
-import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
+import { useEffect } from 'react';
+import { encodeFunctionData, formatEther } from 'viem';
+import { useContractRead, useNetwork } from 'wagmi';
+
+import { getContractAddress } from '@/utils/getContract';
+
 import Erc6551Account from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Account.sol/ERC6551Account.json';
-import { useEffect } from "react";
+import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
 
 interface CrossChainFeeInterface {
-  tokenContract: string,
-  desChain: string,
-  tokenId: string,
-  salt: string,
-  setFee: (fee:any) => void
+  tokenContract: string;
+  desChain: string;
+  tokenId: string;
+  salt: string;
+  setFee: (fee: any) => void;
 }
 
-export default function CrossChainFee({tokenContract, desChain, tokenId, salt, setFee}:CrossChainFeeInterface) {
-  const {chain} = useNetwork()
+export default function CrossChainFee({
+  tokenContract,
+  desChain,
+  tokenId,
+  salt,
+  setFee,
+}: CrossChainFeeInterface) {
+  const { chain } = useNetwork();
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -24,26 +32,22 @@ export default function CrossChainFee({tokenContract, desChain, tokenId, salt, s
     functionName: 'setSourceAddress',
   });
 
-  const { data:fee } = useContractRead({
+  const { data: fee } = useContractRead({
     address: getContractAddress(chain?.id).ERC6551Registry as `0x${string}`,
     abi: Erc6551Registry.abi as any,
     functionName: 'caculateFee',
-    args: [
-      desChain,
-      tokenContract,
-      tokenId,
-      salt,
-      initData,
-    ],
+    args: [desChain, tokenContract, tokenId, salt, initData],
   });
 
   useEffect(() => {
-    if(fee) {
-      setFee(fee)
+    if (fee) {
+      setFee(fee);
     }
-  }, [fee])
+  }, [fee]);
 
-  return(
-    <p>{`${fee && formatEther(fee as any)} ${chain?.nativeCurrency.symbol} (${chain?.nativeCurrency.name})`}</p>
-  )
+  return (
+    <p>{`${fee && formatEther(fee as any)} ${chain?.nativeCurrency.symbol} (${
+      chain?.nativeCurrency.name
+    })`}</p>
+  );
 }

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useEnsAvatar, useEnsName } from 'wagmi';
+
 import { shortenAddress } from '@/utils/addresses';
 
 import Copy from '../Copy';

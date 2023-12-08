@@ -3,9 +3,9 @@ import { configureChains, createConfig } from 'wagmi';
 import {
   avalanche,
   avalancheFuji,
-  sepolia,
   mainnet,
   polygonMumbai,
+  sepolia,
 } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
@@ -13,12 +13,7 @@ const { chains, publicClient } = configureChains(
   [
     ...(process.env.NODE_ENV === 'development'
       ? [polygonMumbai, sepolia, avalancheFuji, mainnet]
-      : [
-          polygonMumbai,
-          sepolia,
-          avalanche,
-          mainnet,
-        ]),
+      : [polygonMumbai, sepolia, avalanche, mainnet]),
   ],
   [
     jsonRpcProvider({
