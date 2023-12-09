@@ -109,3 +109,7 @@
     background-position: 100% 50%;
   }
 }
+
+.tooltip:before {
+  max-width: 40rem
+}

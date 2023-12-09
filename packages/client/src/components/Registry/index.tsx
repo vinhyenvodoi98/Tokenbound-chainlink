@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 import { isAddress } from 'viem';
 import {
   useAccount,
-  useContractRead,
   useContractReads,
   useContractWrite,
   useNetwork,
@@ -16,13 +15,16 @@ import CrossChainFee from '../CrossChainFee';
 import NFTImage from '../NFTImage';
 import Erc721Abi from '../../../../contracts-hardhat/artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json';
 import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
+import AccountReview from './AccountReview';
 
 export interface AccountInterface {
   owner: string;
   account: string;
+  desAccount: string;
   tokenContract: string;
   tokenId: string;
   chain: string;
+  sourceChainId: string;
   salt: string;
 }
 
@@ -35,6 +37,16 @@ export default function Registry() {
   const [salt, setSalt] = useState<string>('');
   const [tokenBounds, setTokenBounds] = useState<AccountInterface[]>([]);
   const [fee, setFee] = useState<any>(0);
+  const [sourceAccount, setSourceAccount] = useState<string>('');
+  const [desAccount, setDesAccount] = useState<string>('');
+
+  const handleSetSourceAccount = (input :string) => {
+    setSourceAccount(input)
+  }
+
+  const handleDesAccount = (input :string) => {
+    setDesAccount(input)
+  }
 
   const reset = () => {
     setTokenContract('');
@@ -75,20 +87,6 @@ export default function Registry() {
       );
     }
   }, []);
-
-  const { data: registry, refetch } = useContractRead({
-    address: getContractAddress(currentChain?.id)
-      .ERC6551Registry as `0x${string}`,
-    abi: Erc6551Registry.abi as any,
-    functionName: 'account',
-    args: [
-      getContractAddress(currentChain?.id).ERC6551Account,
-      chain,
-      tokenContract,
-      tokenId,
-      salt,
-    ],
-  });
 
   const {
     data: transactionHash,
@@ -146,39 +144,33 @@ export default function Registry() {
   }, [tokenContract, tokenId, chain, salt]);
 
   useEffect(() => {
-    if (
-      tokenContract.length > 0 &&
-      tokenId.length > 0 &&
-      chain.length > 0 &&
-      salt.length > 0
-    )
-      refetch?.();
-  }, [tokenContract, tokenId, chain, salt]);
-
-  useEffect(() => {
     if (isSuccess) {
-      toast.success(
-        `Transaction has been created successfully:
-        ${transactionHash?.hash}`
-      );
+      if(chain.length>0 && tokenContract.length>0 && salt.length>0 && sourceAccount.length >0 ) {
+        toast.success(
+          `Transaction has been created successfully:
+          ${transactionHash?.hash}`
+        );
 
-      setTokenBounds((prevTokenBounds) => [
-        ...prevTokenBounds,
-        {
-          owner: account.address,
-          account: registry as any,
-          tokenContract,
-          tokenId,
-          chain,
-          salt,
-        } as AccountInterface,
-      ]);
+        setTokenBounds((prevTokenBounds) => [
+          ...prevTokenBounds,
+          {
+            owner: account.address,
+            account: sourceAccount,
+            desAccount,
+            tokenContract,
+            tokenId,
+            chain,
+            sourceChainId: currentChain?.id as any,
+            salt,
+          } as AccountInterface,
+        ]);
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        document.getElementById('create-tokenbound-modal ').close();
+      }
 
       reset();
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      document.getElementById('create-tokenbound-modal ').close();
     }
   }, [isSuccess]);
 
@@ -201,6 +193,7 @@ export default function Registry() {
           </label>
           <input
             onChange={(e) => handleInput(e.target.value)}
+            value={tokenContract}
             type='text'
             placeholder='Type Token Address: 0x...'
             className='input input-bordered w-full rounded-md z-10'
@@ -210,6 +203,7 @@ export default function Registry() {
           </label>
           <input
             onChange={(e) => setTokenId(e.target.value.toString())}
+            value={tokenId}
             type='number'
             placeholder='Type TokenID: 1'
             className='input input-bordered w-full rounded-md z-10'
@@ -249,6 +243,7 @@ export default function Registry() {
           </label>
           <input
             onChange={(e) => setSalt(e.target.value)}
+            value={salt}
             type='number'
             placeholder='Type Any Number: 1'
             className='input input-bordered w-full rounded-md z-10'
@@ -277,13 +272,9 @@ export default function Registry() {
             <NFTImage token={token as any} />
           </div>
         </div>
-        <div className='rounded-full m-2 p-2 w-[420px] h-10 bg-green-200 flex justify-center items-center'>
-          {registry ? (
-            <>{registry}</>
-          ) : (
-            <div className='skeleton h-5 w-[384px]'></div>
-          )}
-        </div>
+        {
+          currentChain && <AccountReview handleDesAccount={handleDesAccount} handleSetSourceAccount={handleSetSourceAccount} sourceChain={currentChain?.id} chain={chain} tokenContract={tokenContract} tokenId={tokenId} salt={salt}/>
+        }
         {chain === '43113' && (
           <div className='flex gap-2'>
             <p>Cross-chain fee:</p>

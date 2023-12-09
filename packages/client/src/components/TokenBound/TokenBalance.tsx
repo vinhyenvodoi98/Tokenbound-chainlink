@@ -23,7 +23,7 @@ const Native = ({
   handleTotal: (value: number) => void;
 }) => {
   const { data, refetch } = useBalance({
-    address: tokenBound?.account as `0x${string}`,
+    address: tokenBound.desAccount.length > 0 ? tokenBound?.desAccount as `0x${string}` : tokenBound?.account as `0x${string}`,
     chainId: Number(tokenBound?.chain),
   });
 
@@ -42,6 +42,7 @@ const Native = ({
       .dataFeed as `0x${string}`,
     abi: AggregatorV3Interface.abi as any,
     functionName: 'latestRoundData',
+    chainId: Number(tokenBound?.chain),
   });
 
   const tokenPrice = useMemo(
@@ -79,7 +80,7 @@ const Token = ({
   handleTotal: (value: number) => void;
 }) => {
   const { data, refetch } = useBalance({
-    address: tokenBound?.account as `0x${string}`,
+    address: tokenBound ? tokenBound.desAccount.length > 0 ? tokenBound?.desAccount as `0x${string}` : tokenBound?.account as `0x${string}`: undefined,
     chainId: Number(tokenBound?.chain),
     token: tokenAddress as `0x${string}`,
   });
@@ -95,10 +96,11 @@ const Token = ({
   }, []);
 
   const { data: price } = useContractRead({
-    address: tokenBound?.account as `0x${string}`,
+    address: tokenBound ? tokenBound.desAccount.length > 0 ? tokenBound?.desAccount as `0x${string}` : tokenBound?.account as `0x${string}`: undefined,
     abi: Erc6551Account.abi as any,
     functionName: 'getChainlinkDataFeedLatestAnswer',
     args: [tokenAddress],
+    chainId: Number(tokenBound?.chain),
   });
 
   const tokenPrice = useMemo(
@@ -135,11 +137,6 @@ export default function TokenBalance({
     // @ts-ignore
     document.getElementById(`send-modal-${tokenAddress}`).showModal();
   };
-
-  const { data: nativeBalance, refetch: nativeRefetch } = useBalance({
-    address: tokenBound?.account as `0x${string}`,
-    chainId: Number(tokenBound?.chain),
-  });
 
   const isNative = useMemo(
     () => tokenAddress === NATIVE_TOKEN.address,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAccount, useContractRead } from 'wagmi';
 
-import { NATIVE_TOKEN } from '@/constant/chains';
+import { CHAIN_SUPPORTED, NATIVE_TOKEN } from '@/constant/chains';
 import { shortenAddress } from '@/utils/addresses';
 
 import SetTokenAddress from './SetTokenAddress';
@@ -35,7 +35,7 @@ export default function TokenBound() {
         (bound) => bound.owner === account.address
       );
       setTokenBounds(_bounds);
-      setCurrentAccount(_bounds[0]);
+      if(!currentAccount) setCurrentAccount(_bounds[0]);
     }
 
     const interval = setInterval(() => {
@@ -47,7 +47,7 @@ export default function TokenBound() {
           (bound) => bound.owner === account.address
         );
         setTokenBounds(_bounds);
-        setCurrentAccount(_bounds[0]);
+        if(!currentAccount) setCurrentAccount(_bounds[0]);
       }
     }, 5000);
 
@@ -79,8 +79,8 @@ export default function TokenBound() {
   }, [allToken]);
 
   return (
-    <div className='w-full h-96 grid grid-cols-4 border-2 border-gray-600 rounded-xl'>
-      <div className='bg-gray-800 rounded-l-lg p-4'>
+    <div className='w-full h-96 grid grid-cols-10 border-2 border-gray-600 rounded-xl'>
+      <div className='bg-gray-800 col-span-3 rounded-l-lg p-4'>
         {tokenBounds.map((tokenBound, index) => (
           <div
             key={index}
@@ -89,14 +89,29 @@ export default function TokenBound() {
             }`}
             onClick={() => setCurrentAccount(tokenBound)}
           >
-            <div className='flex justify-between'>
-              <p>{shortenAddress(tokenBound.account)}</p>
-              <Copy text={tokenBound.account} />
+            <div className='flex gap-2'>
+              <div className='flex gap-2'>
+                <img src={CHAIN_SUPPORTED[tokenBound.sourceChainId].image} alt={CHAIN_SUPPORTED[tokenBound.sourceChainId].name} className="w-5 h-5 rounded" />
+                <p>{shortenAddress(tokenBound.account)}</p>
+                <Copy text={tokenBound.account} />
+              </div>
+              {
+                tokenBound.desAccount.length > 0 && (
+                  <>
+                    <p>{` -> `}</p>
+                    <div className='flex gap-2'>
+                      <img src={CHAIN_SUPPORTED[tokenBound.chain].image} alt={CHAIN_SUPPORTED[tokenBound.chain].name} className="w-5 h-5 rounded" />
+                      <p>{shortenAddress(tokenBound.desAccount)}</p>
+                      <Copy text={tokenBound.desAccount} />
+                    </div>
+                  </>
+                )
+              }
             </div>
           </div>
         ))}
       </div>
-      <div className='col-span-3 p-4'>
+      <div className='col-span-7 p-4'>
         <div className='h-20 flex justify-between rounded-lg bg-gradient-to-r from-green-100 to-blue-200 p-3'>
           <div>
             <h1 className='text-gray-900'>${total} USD</h1>
