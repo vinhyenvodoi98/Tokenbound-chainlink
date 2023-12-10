@@ -2,7 +2,6 @@
 pragma solidity 0.8.20;
 
 import {Withdraw} from "./Withdraw.sol";
-import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
 
 contract CCIPConfig is Withdraw {
     mapping(uint256 => address) public ERC6551RegistryAddress;

@@ -25,7 +25,7 @@ contract ERC6551Registry is IERC6551Registry, CCIPReceiver, CCIPConfig {
         address tokenContract,
         uint256 tokenId,
         uint256 salt,
-        bytes calldata initData
+        bytes calldata initData // for cross-chain have to set to setDesAddress
     ) external payable returns (address) {
         bytes memory code = _creationCode(implementation, chainId, tokenContract, tokenId, salt);
 
@@ -64,21 +64,22 @@ contract ERC6551Registry is IERC6551Registry, CCIPReceiver, CCIPConfig {
             );
 
             emit MessageSent(messageId);
-        } else {
-            if (initData.length != 0) {
-                (bool success, ) = _account.call(initData);
-                if (!success) revert InitializationFailed();
-            }
-
-            emit AccountCreated(
-                _account,
-                implementation,
-                chainId,
-                tokenContract,
-                tokenId,
-                salt
-            );
         }
+
+        if (initData.length != 0) {
+            (bool success, ) = _account.call(initData);
+            if (!success) revert InitializationFailed();
+        }
+
+        emit AccountCreated(
+            _account,
+            implementation,
+            chainId,
+            tokenContract,
+            tokenId,
+            salt
+        );
+
         return _account;
     }
 

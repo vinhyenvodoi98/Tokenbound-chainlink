@@ -11,7 +11,7 @@ async function main() {
     `ERC6551Registry deployed to ${ERC6551Registry.target}`
   );
 
-  const setupCCIPSelopia = await ERC6551Registry.addCCIPAddress("43113","0x8A4d8d67DD2Dc1F4Ff74ec2c56c43e98707a9859","0xe7F5387526fffEfffc807031277ef088442c7F00","14767482510784806043")
+  const setupCCIPSelopia = await ERC6551Registry.addCCIPAddress("43113","0xf4089c897f93060F3004B7160f798E9Fd0eE916b","0x0EED5fE3fce919c9340C08C64D70fDa508d5B201","14767482510784806043")
   console.log(setupCCIPSelopia)
 
   const ERC6551Account = await ethers.deployContract("ERC6551Account", [], {}) as any;

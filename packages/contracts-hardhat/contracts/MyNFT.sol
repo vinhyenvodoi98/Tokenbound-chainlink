@@ -1,4 +1,4 @@
-SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -8,7 +8,7 @@ contract SPER is ERC721 {
     uint256 private _nextTokenId;
 
     constructor()
-        ERC721("Scroll Pioneers", "SPER")
+        ERC721("Pioneers", "PIR")
     {}
 
     function _baseURI() internal pure override returns (string memory) {

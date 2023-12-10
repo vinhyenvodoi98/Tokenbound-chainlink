@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "OwnableInterface",
-  "sourceName": "@chainlink/contracts-ccip/src/v0.8/interfaces/OwnableInterface.sol",
+  "contractName": "IOwnable",
+  "sourceName": "@chainlink/contracts-ccip/src/v0.8/shared/interfaces/IOwnable.sol",
   "abi": [
     {
       "inputs": [],

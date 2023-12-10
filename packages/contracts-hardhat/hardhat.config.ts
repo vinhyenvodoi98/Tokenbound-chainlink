@@ -11,7 +11,7 @@ const config: HardhatUserConfig = {
       {
         version: '0.8.20',
         settings: {
-          // evmVersion: 'paris' // for fuji
+          evmVersion: 'paris' // for fuji
         }
       }
     ]
@@ -37,16 +37,11 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY as string],
       chainId: 43113,
       allowUnlimitedContractSize: true,
-    },
-    scroll: {
-      url: "https://rpc.ankr.com/scroll",
-      accounts: [PRIVATE_KEY as string],
-      chainId: 534352,
     }
   },
   etherscan: {
     apiKey: {
-      goerli: GOERLY_ETHERSCAN as string,
+      sepolia: GOERLY_ETHERSCAN as string,
     },
   }
 };

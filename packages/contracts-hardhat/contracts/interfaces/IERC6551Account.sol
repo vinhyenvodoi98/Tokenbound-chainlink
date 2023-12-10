@@ -14,6 +14,7 @@ interface IERC6551Account {
     function executeCall(
         address to,
         uint256 value,
+        uint256 chainId,
         bytes calldata data
     ) external payable returns (bytes memory);
 

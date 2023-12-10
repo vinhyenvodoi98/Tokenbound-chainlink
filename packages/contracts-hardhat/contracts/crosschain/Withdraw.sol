@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Withdraw is OwnerIsCreator {
     error FailedToWithdrawEth(address owner, address target, uint256 value);
