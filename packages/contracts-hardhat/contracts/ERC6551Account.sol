@@ -50,7 +50,7 @@ contract ERC6551Account is IERC1271, CCIPReceiver, IERC6551Account, TokenArray {
         uint256 chainId,
         bytes calldata data
     ) external payable returns (bytes memory result) {
-        // require(msg.sender == owner() || msg.sender == address(this), "Not token owner"); // TODO need to fix require
+        require(msg.sender == owner() || msg.sender == address(this), "Not token owner"); // TODO need to fix require
 
         ++nonce;
 
