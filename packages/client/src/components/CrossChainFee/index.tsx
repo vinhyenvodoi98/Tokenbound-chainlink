@@ -29,7 +29,7 @@ export default function CrossChainFee({
   const initData = encodeFunctionData({
     abi: Erc6551Account.abi,
     args: [tokenContract], //test args
-    functionName: 'setCCIP',
+    functionName: 'setSourceAddress',
   });
 
   const { data: fee } = useContractRead({

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import { isAddress } from 'viem';
+import { encodeFunctionData, isAddress } from 'viem';
 import {
   useAccount,
   useContractReads,
@@ -15,6 +15,7 @@ import CrossChainFee from '../CrossChainFee';
 import NFTImage from '../NFTImage';
 import Erc721Abi from '../../../../contracts-hardhat/artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json';
 import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
+import Erc6551Account from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Account.sol/ERC6551Account.json';
 import AccountReview from './AccountReview';
 
 export interface AccountInterface {
@@ -101,6 +102,14 @@ export default function Registry() {
   });
 
   const createNewAccount = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const initData = chain === "43113" ? encodeFunctionData({
+      abi: Erc6551Account.abi,
+      args: [desAccount],
+      functionName: 'setDesAddress',
+    }) : "";
+
     if (currentChain)
       triggerCreateAccount({
         args: [
@@ -109,7 +118,7 @@ export default function Registry() {
           tokenContract,
           tokenId,
           salt,
-          '',
+          initData,
         ],
         value: fee,
       });
