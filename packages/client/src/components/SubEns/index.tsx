@@ -1,8 +1,12 @@
 import { ENS_PNG } from "@/constant/chains";
+import { shortenAddress } from "@/utils/addresses";
 import { useState } from "react";
 import { useAccount, useEnsName } from "wagmi";
+import { useEns } from "./ethers";
 
 export default function SubEns({address}: {address: string}) {
+  const [isCreated, setCreated] = useState(false)
+  const ens = useEns()
 
   const {address: owner} = useAccount()
 
@@ -18,8 +22,29 @@ export default function SubEns({address}: {address: string}) {
     document.getElementById('create-subens').showModal();
   };
 
-  const handleSetSubdomain = () => {
-    console.log(subDomain)
+  const handleCreateSubname = async () => {
+    await ens.createSubname(`${subDomain}.${name}`, {
+      contract: 'nameWrapper',
+      owner,
+    });
+    setCreated(true)
+  }
+
+  const handleAssignSubname = async () => {
+    await ens.setRecords(`${subDomain}.${name}`, {
+      records: {
+        coinTypes: [
+          {
+            key: 'ETH',
+            value: address,
+          },
+        ],
+      },
+    })
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    document.getElementById('create-subens').close();
   }
 
   return(
@@ -58,12 +83,23 @@ export default function SubEns({address}: {address: string}) {
             </div>
           </div>
           <div className='mt-4 flex flex-row-reverse'>
-            <button
-              onClick={() => handleSetSubdomain()}
-              className='btn btn-outline rounded-full text-blue-500 hover:bg-blue-600 text-lg w-32'
+            {
+              isCreated ?
+              <button
+              onClick={() => handleAssignSubname()}
+              className='btn btn-outline rounded-full text-blue-500 hover:bg-blue-600 text-lg w-full'
             >
-              Submit
+              Assign to {shortenAddress(address)}
             </button>
+              :
+              <button
+              onClick={() => handleCreateSubname()}
+              className='btn btn-outline rounded-full text-blue-500 hover:bg-blue-600 text-lg w-full'
+            >
+              Create Subdomain
+            </button>
+            }
+            
           </div>
         </div>
         <form method='dialog' className='modal-backdrop'>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAccount, useContractRead, useNetwork } from 'wagmi';
+import { useAccount, useContractRead, useEnsAddress, useEnsName, useEnsResolver, useNetwork } from 'wagmi';
 
 import { CHAIN_SUPPORTED, NATIVE_TOKEN } from '@/constant/chains';
 import { shortenAddress } from '@/utils/addresses';
@@ -11,10 +11,10 @@ import { RefreshIcon } from '../Icon';
 import { AccountInterface } from '../Registry';
 import Erc6551Account from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Account.sol/ERC6551Account.json';
 import SubEns from '../SubEns';
+import { useEns } from '../SubEns/ethers';
 
 export default function TokenBound() {
   const account = useAccount();
-  const {chain}= useNetwork()
   const [tokenBounds, setTokenBounds] = useState<AccountInterface[]>([]);
   const [currentAccount, setCurrentAccount] = useState<AccountInterface | null>(
     null
@@ -87,35 +87,12 @@ export default function TokenBound() {
         {tokenBounds.map((tokenBound, index) => (
           <div
             key={index}
-            className={`p-3 rounded-lg hover:bg-gray-500 cursor-pointer ${
+            className={`p-3 h-16 m-1 flex items-center rounded-lg hover:bg-gray-500 cursor-pointer ${
               tokenBound.account === currentAccount?.account && ' bg-gray-500'
             }`}
             onClick={() => setCurrentAccount(tokenBound)}
           >
-            <div className='flex justify-between items-center'>
-              <div className='flex gap-2'>
-                <div className='flex gap-2'>
-                  <img src={CHAIN_SUPPORTED[tokenBound.sourceChainId].image} alt={CHAIN_SUPPORTED[tokenBound.sourceChainId].name} className="w-5 h-5 rounded" />
-                  <p>{shortenAddress(tokenBound.account)}</p>
-                  <Copy text={tokenBound.account} />
-                </div>
-                {
-                  tokenBound.desAccount.length > 0 && (
-                    <>
-                      <p>{` -> `}</p>
-                      <div className='flex gap-2'>
-                        <img src={CHAIN_SUPPORTED[tokenBound.chain].image} alt={CHAIN_SUPPORTED[tokenBound.chain].name} className="w-5 h-5 rounded" />
-                        <p>{shortenAddress(tokenBound.desAccount)}</p>
-                        <Copy text={tokenBound.desAccount} />
-                      </div>
-                    </>
-                  )
-                }
-              </div>
-              {
-                (chain && chain.id === Number(tokenBound.chain)) && <SubEns address={tokenBound.account}/>
-              }
-            </div>
+            <TokenBoundAddress tokenBound={tokenBound} />
           </div>
         ))}
       </div>
@@ -145,4 +122,48 @@ export default function TokenBound() {
       </div>
     </div>
   );
+}
+
+const TokenBoundAddress = ({tokenBound}: {tokenBound: AccountInterface}) => {
+  const {chain}= useNetwork()
+  const ens = useEns()
+  const [name, setName] = useState<string>('')
+
+  useEffect(() => {
+    const resolverEns = async () => {
+      const name = await ens.getNames({
+        address: tokenBound.account,
+        type: "resolvedAddress"
+      })
+      if(name.length > 0) setName(name[0].name)
+    }
+    if(ens) resolverEns()
+  }, [ens])
+
+  return (
+    <div className='flex w-full justify-between items-center'>
+      <div className='flex gap-2'>
+        <div className='flex gap-2'>
+          <img src={CHAIN_SUPPORTED[tokenBound.sourceChainId].image} alt={CHAIN_SUPPORTED[tokenBound.sourceChainId].name} className="w-5 h-5 rounded" />
+          <p>{name.length > 0 ? name : shortenAddress(tokenBound.account)}</p>
+          <Copy text={tokenBound.account} />
+        </div>
+        {
+          tokenBound.desAccount.length > 0 && (
+            <>
+              <p>{` -> `}</p>
+              <div className='flex gap-2'>
+                <img src={CHAIN_SUPPORTED[tokenBound.chain].image} alt={CHAIN_SUPPORTED[tokenBound.chain].name} className="w-5 h-5 rounded" />
+                <p>{shortenAddress(tokenBound.desAccount)}</p>
+                <Copy text={tokenBound.desAccount} />
+              </div>
+            </>
+          )
+        }
+      </div>
+      {
+        (chain && chain.id === Number(tokenBound.chain)) && <SubEns address={tokenBound.account}/>
+      }
+    </div>
+  )
 }

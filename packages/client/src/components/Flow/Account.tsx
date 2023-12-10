@@ -4,6 +4,7 @@ import { Handle, Position } from 'reactflow';
 interface Data {
   label: string;
   address: string;
+  image: string;
 }
 
 function Account({
@@ -18,16 +19,17 @@ function Account({
       <div className='flex flex-col'>
         <label
           htmlFor='text'
-          className='p-2 bg-purple-100 rounded-t-md text-black'
+          className='p-2 bg-purple-100 rounded-t-md text-black flex gap-2'
         >
           {data.label}
+          <Image src='/png/link-logo.png' alt='link logo' height={24} width={24} />
         </label>
-        <div className='flex justify-center items-center p-2 gap-4 p-4'>
-          <Image
+        <div className='flex justify-center items-center p-4 gap-4'>
+          <img
             className='rounded-lg '
-            src='/png/link-logo.png'
-            height={40}
-            width={40}
+            src={data.image}
+            height={36}
+            width={36}
             alt='link logo'
           />
           <p>{data.address}</p>

@@ -1,3 +1,4 @@
+import { CHAIN_SUPPORTED } from '@/constant/chains';
 import { useCallback, useState } from 'react';
 import ReactFlow, {
   applyEdgeChanges,
@@ -42,19 +43,19 @@ const initialNodes = [
   {
     id: '4',
     type: 'account',
-    data: { label: 'Account A', address: '0x71C...e5E' },
+    data: { label: 'Account A', address: 'airdrop.taio-newgate.eth', image: CHAIN_SUPPORTED[11155111].image },
     position: { x: 600, y: 0 },
   },
   {
     id: '5',
     type: 'account',
-    data: { label: 'Account B', address: '0x1Ca...2R6' },
+    data: { label: 'Account B', address: '0x1Ca...2R6', image: CHAIN_SUPPORTED[43113].image },
     position: { x: 600, y: 200 },
   },
   {
     id: '6',
     type: 'account',
-    data: { label: 'Account C', address: '0x9cC...158' },
+    data: { label: 'Account C', address: '0x9cC...158', image: CHAIN_SUPPORTED[11155111].image },
     position: { x: 600, y: 400 },
   },
 ];
