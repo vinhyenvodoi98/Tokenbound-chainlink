@@ -22,7 +22,12 @@ function Account({
           className='p-2 bg-purple-100 rounded-t-md text-black flex gap-2'
         >
           {data.label}
-          <Image src='/png/link-logo.png' alt='link logo' height={24} width={24} />
+          <Image
+            src='/png/link-logo.png'
+            alt='link logo'
+            height={24}
+            width={24}
+          />
         </label>
         <div className='flex justify-center items-center p-4 gap-4'>
           <img

@@ -23,7 +23,10 @@ const Native = ({
   handleTotal: (value: number) => void;
 }) => {
   const { data, refetch } = useBalance({
-    address: tokenBound.desAccount.length > 0 ? tokenBound?.desAccount as `0x${string}` : tokenBound?.account as `0x${string}`,
+    address:
+      tokenBound.desAccount.length > 0
+        ? (tokenBound?.desAccount as `0x${string}`)
+        : (tokenBound?.account as `0x${string}`),
     chainId: Number(tokenBound?.chain),
   });
 
@@ -80,7 +83,11 @@ const Token = ({
   handleTotal: (value: number) => void;
 }) => {
   const { data, refetch } = useBalance({
-    address: tokenBound ? tokenBound.desAccount.length > 0 ? tokenBound?.desAccount as `0x${string}` : tokenBound?.account as `0x${string}`: undefined,
+    address: tokenBound
+      ? tokenBound.desAccount.length > 0
+        ? (tokenBound?.desAccount as `0x${string}`)
+        : (tokenBound?.account as `0x${string}`)
+      : undefined,
     chainId: Number(tokenBound?.chain),
     token: tokenAddress as `0x${string}`,
   });
@@ -96,7 +103,11 @@ const Token = ({
   }, []);
 
   const { data: price } = useContractRead({
-    address: tokenBound ? tokenBound.desAccount.length > 0 ? tokenBound?.desAccount as `0x${string}` : tokenBound?.account as `0x${string}`: undefined,
+    address: tokenBound
+      ? tokenBound.desAccount.length > 0
+        ? (tokenBound?.desAccount as `0x${string}`)
+        : (tokenBound?.account as `0x${string}`)
+      : undefined,
     abi: Erc6551Account.abi as any,
     functionName: 'getChainlinkDataFeedLatestAnswer',
     args: [tokenAddress],

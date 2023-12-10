@@ -11,12 +11,12 @@ import {
 import { CHAIN_SUPPORTED } from '@/constant/chains';
 import { getContractAddress } from '@/utils/getContract';
 
+import AccountReview from './AccountReview';
 import CrossChainFee from '../CrossChainFee';
 import NFTImage from '../NFTImage';
 import Erc721Abi from '../../../../contracts-hardhat/artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json';
-import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
 import Erc6551Account from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Account.sol/ERC6551Account.json';
-import AccountReview from './AccountReview';
+import Erc6551Registry from '../../../../contracts-hardhat/artifacts/contracts/ERC6551Registry.sol/ERC6551Registry.json';
 
 export interface AccountInterface {
   owner: string;
@@ -41,13 +41,13 @@ export default function Registry() {
   const [sourceAccount, setSourceAccount] = useState<string>('');
   const [desAccount, setDesAccount] = useState<string>('');
 
-  const handleSetSourceAccount = (input :string) => {
-    setSourceAccount(input)
-  }
+  const handleSetSourceAccount = (input: string) => {
+    setSourceAccount(input);
+  };
 
-  const handleDesAccount = (input :string) => {
-    setDesAccount(input)
-  }
+  const handleDesAccount = (input: string) => {
+    setDesAccount(input);
+  };
 
   const reset = () => {
     setTokenContract('');
@@ -104,11 +104,14 @@ export default function Registry() {
   const createNewAccount = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const initData = chain === "43113" ? encodeFunctionData({
-      abi: Erc6551Account.abi,
-      args: [desAccount],
-      functionName: 'setDesAddress',
-    }) : "";
+    const initData =
+      chain === '43113'
+        ? encodeFunctionData({
+            abi: Erc6551Account.abi,
+            args: [desAccount],
+            functionName: 'setDesAddress',
+          })
+        : '';
 
     if (currentChain)
       triggerCreateAccount({
@@ -154,7 +157,12 @@ export default function Registry() {
 
   useEffect(() => {
     if (isSuccess) {
-      if(chain.length>0 && tokenContract.length>0 && salt.length>0 && sourceAccount.length >0 ) {
+      if (
+        chain.length > 0 &&
+        tokenContract.length > 0 &&
+        salt.length > 0 &&
+        sourceAccount.length > 0
+      ) {
         toast.success(
           `Transaction has been created successfully:
           ${transactionHash?.hash}`
@@ -281,9 +289,17 @@ export default function Registry() {
             <NFTImage token={token as any} />
           </div>
         </div>
-        {
-          currentChain && <AccountReview handleDesAccount={handleDesAccount} handleSetSourceAccount={handleSetSourceAccount} sourceChain={currentChain?.id} chain={chain} tokenContract={tokenContract} tokenId={tokenId} salt={salt}/>
-        }
+        {currentChain && (
+          <AccountReview
+            handleDesAccount={handleDesAccount}
+            handleSetSourceAccount={handleSetSourceAccount}
+            sourceChain={currentChain?.id}
+            chain={chain}
+            tokenContract={tokenContract}
+            tokenId={tokenId}
+            salt={salt}
+          />
+        )}
         {chain === '43113' && (
           <div className='flex gap-2'>
             <p>Cross-chain fee:</p>

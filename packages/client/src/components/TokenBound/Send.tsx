@@ -17,11 +17,16 @@ interface SendInterface {
 interface EstimateSendFeeInterface {
   tokenBound: AccountInterface;
   to: string;
-  value: string
-  setFee: Dispatch<SetStateAction<string>>
+  value: string;
+  setFee: Dispatch<SetStateAction<string>>;
 }
 
-function EstimateSendFee ({tokenBound, to, value, setFee}: EstimateSendFeeInterface) {
+function EstimateSendFee({
+  tokenBound,
+  to,
+  value,
+  setFee,
+}: EstimateSendFeeInterface) {
   const { chain } = useNetwork();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -35,7 +40,14 @@ function EstimateSendFee ({tokenBound, to, value, setFee}: EstimateSendFeeInterf
     address: tokenBound.account as `0x${string}`,
     abi: Erc6551Account.abi as any,
     functionName: 'caculateFee',
-    args: ["14767482510784806043", "0xD0daae2231E9CB96b94C8512223533293C3693Bf", to, parseEther(value), tokenBound.chain, ""],
+    args: [
+      '14767482510784806043',
+      '0xD0daae2231E9CB96b94C8512223533293C3693Bf',
+      to,
+      parseEther(value),
+      tokenBound.chain,
+      '',
+    ],
   });
 
   useEffect(() => {
@@ -45,14 +57,14 @@ function EstimateSendFee ({tokenBound, to, value, setFee}: EstimateSendFeeInterf
   }, [fee]);
 
   return (
-    <>{
-      fee ?
-      <p>{`${fee && formatEther(fee as any)} ${chain?.nativeCurrency.symbol} (${
-        chain?.nativeCurrency.name
-      })`}</p>
-       :
-       <div className='skeleton h-5 w-[100px]'></div>
-    }
+    <>
+      {fee ? (
+        <p>{`${fee && formatEther(fee as any)} ${
+          chain?.nativeCurrency.symbol
+        } (${chain?.nativeCurrency.name})`}</p>
+      ) : (
+        <div className='skeleton h-5 w-[100px]'></div>
+      )}
     </>
   );
 }
@@ -61,7 +73,7 @@ export default function Send({ tokenBound, tokenAddress }: SendInterface) {
   const { chain } = useNetwork();
   const [to, setTo] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
-  const [fee, setFee] = useState<string>('')
+  const [fee, setFee] = useState<string>('');
 
   const isNative = useMemo(
     () => tokenAddress === NATIVE_TOKEN.address,
@@ -96,7 +108,7 @@ export default function Send({ tokenBound, tokenAddress }: SendInterface) {
 
     triggerExecuteCall({
       args: [_to, _amount, tokenBound?.chain, data],
-      value: fee as any
+      value: fee as any,
     });
   };
 
@@ -150,14 +162,17 @@ export default function Send({ tokenBound, tokenAddress }: SendInterface) {
           placeholder='Type Chain: 1'
           className='input input-bordered w-full rounded-md z-10'
         /> */}
-        {
-          (tokenBound && chain && (chain.id !== Number(tokenBound?.chain))) && (
-            <div className='mt-4 flex gap-2 rounded-md p-2 h-10 bg-green-200'>
-              <p>Fee:</p>
-              <EstimateSendFee to={to} tokenBound={tokenBound} value={amount} setFee={setFee} />
-            </div>
-          )
-        }
+        {tokenBound && chain && chain.id !== Number(tokenBound?.chain) && (
+          <div className='mt-4 flex gap-2 rounded-md p-2 h-10 bg-green-200'>
+            <p>Fee:</p>
+            <EstimateSendFee
+              to={to}
+              tokenBound={tokenBound}
+              value={amount}
+              setFee={setFee}
+            />
+          </div>
+        )}
       </div>
       <div className='mt-8 flex flex-row-reverse'>
         <button
