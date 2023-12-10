@@ -21,7 +21,7 @@ export default function SubEns({ address }: { address: string }) {
   const handleModal = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    document.getElementById('create-subens').showModal();
+    document.getElementById(`create-subens-${address}`).showModal();
   };
 
   const handleCreateSubname = async () => {
@@ -46,7 +46,7 @@ export default function SubEns({ address }: { address: string }) {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    document.getElementById('create-subens').close();
+    document.getElementById(`create-subens-${address}`).close();
   };
 
   return (
@@ -57,7 +57,7 @@ export default function SubEns({ address }: { address: string }) {
       >
         <img className='h-4 w-4' src={ENS_PNG.image} alt='ens' />
       </div>
-      <dialog id='create-subens' className='modal'>
+      <dialog id={`create-subens-${address}`} className='modal'>
         <div className='modal-box text-black w-1/3 max-w-5xl'>
           <form method='dialog'>
             <button className='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>
